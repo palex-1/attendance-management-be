@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  
+  <parent>
+    <groupId>it.palex.attendanceManagement</groupId>
+    <artifactId>attendance-management</artifactId>
+    <version>1.0.0</version>
+  </parent>
+  
+  
+  <artifactId>data</artifactId>
+  <name>data</name>
+  <url>http://maven.apache.org</url>
+  
+  
+  
+  <dependencies>
+	
+		<dependency>
+			<groupId>it.palex.attendanceManagement</groupId>
+			<artifactId>library</artifactId>
+			<version>${attendanceManagement-library.version}</version>
+		</dependency>
+		
+		
+	    <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+		<dependency>
+		    <groupId>org.postgresql</groupId>
+		    <artifactId>postgresql</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-rest</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate.validator</groupId>
+			<artifactId>hibernate-validator</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-ehcache</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jboss.logging</groupId>
+					<artifactId>jboss-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.querydsl</groupId>
+			<artifactId>querydsl-apt</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.querydsl</groupId>
+			<artifactId>querydsl-jpa</artifactId>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.mysema.maven/apt-maven-plugin -->
+		<dependency>
+			<groupId>com.mysema.maven</groupId>
+			<artifactId>apt-maven-plugin</artifactId>
+			<version>${apt-maven-plugin.version}</version>
+		</dependency>
+		
+		
+  </dependencies>
+  
+  
+  
+  <build>
+		<plugins>
+		
+		<plugin>
+	        <artifactId>maven-compiler-plugin</artifactId>
+	        <configuration>
+	          <source>${java.version}</source>
+	          <target>${java.version}</target>
+	        </configuration>
+	      </plugin>
+			
+		
+			<plugin>
+				<groupId>com.mysema.maven</groupId>
+				<artifactId>apt-maven-plugin</artifactId>
+				<version>${apt-maven-plugin.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>process</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>target/generated-sources/java</outputDirectory>
+							<processor>com.querydsl.apt.jpa.JPAAnnotationProcessor</processor>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			
+            
+		</plugins>
+	</build>
+	
+
+  
+</project>

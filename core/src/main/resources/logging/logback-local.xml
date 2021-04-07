@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<property name="LOG_DIR" value="C:/CustomTempData/Logs" />
+	<property name="APP_NAME" value="core" />
+	<property name="FILE_LOGS_APPENDER_LEVEL" value="WARN" />
+	<property name="CONSOLE_APPENDER_LEVEL" value="INFO" />
+
+
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		  <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+	        <level>${CONSOLE_APPENDER_LEVEL}</level>
+	       </filter>
+	       <layout class="ch.qos.logback.classic.PatternLayout">
+	           <Pattern>
+	               %d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n
+	           </Pattern>
+	       </layout>
+	  </appender>
+
+	<appender name="STASH" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	
+		<!-- do not delete file at startup but add at the end -->
+		<append>true</append>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+	        <level>${FILE_LOGS_APPENDER_LEVEL}</level>
+	    </filter>
+		 
+	    <file>${LOG_DIR}/attendance-management-logs-${APP_NAME}.log</file>
+	    
+	    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+		   	<fileNamePattern>${LOG_DIR}/attendance-management-logs-${APP_NAME}.%d{yyyy-MM-dd}.%i.log.zip
+	        </fileNamePattern>
+	        <!-- keep 30 days' worth of history -->
+	        <MaxHistory>7</MaxHistory>
+	        
+	        <maxFileSize>5MB</maxFileSize>    
+	        <totalSizeCap>20GB</totalSizeCap>
+	   	</rollingPolicy>
+	    
+        
+	     
+	    <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+	</appender>
+	
+	
+	<!-- Levels TRACE, DEBUG, INFO, WARN and ERROR -->
+    
+    <root level="INFO">
+    	<appender-ref ref="CONSOLE"/>
+<!-- 	    <appender-ref ref="STASH" />         -->
+	</root>
+    
+</configuration>
+

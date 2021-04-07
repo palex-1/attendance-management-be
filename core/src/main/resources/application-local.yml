@@ -1,0 +1,144 @@
+logging:
+  config: classpath:logging/logback-local.xml
+spring:
+  application:
+    name: core
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+    
+server:
+  port: 8080
+
+  
+###################### DATABASE #####################   
+persistence:
+  datasource: 
+    driver-class-name: org.postgresql.Driver
+    url:
+    username: 
+    password: 
+  hibernate:
+    default_schema: attendance_management
+    ddl-auto: none
+    dialect: org.hibernate.dialect.PostgreSQL95Dialect
+    jdbc:
+      lob:
+        non_contextual_creation: true
+    c3p0:
+      max_size: 100
+      min_size: 2
+      acquire_increment: 1
+      idle_test_period: 300
+      max_statements: 50
+      timeout: 300  
+    
+##################### SWAGGER #####################
+swagger:
+  api:
+    title: Attendance Management Core Service
+    description: Rest API of Attendance Management Core Service
+    version: 1.0.0
+    termsOfServiceUrl:
+    contact.name: Attendance Management
+    contact.site-url: https://www.attendance-management.com/
+    contact.site-email: gestione.impiegati@gmail.com
+    license: GPL
+    licenseUrl: 
+
+    
+#################### SECURITY #######################
+security:
+  auth:
+    header: Authorization
+  proxy:
+    type: CLOUDFLARE
+  login:
+    bcrypt:
+      streght: 10
+  jwt:
+    secret: 
+    #duration expressed in seconds 86400=24hours
+    duration: 86400
+  download:
+    ticketDownloadValidity: 3600
+  hmac:
+    otp:
+      #duration is expressed in seconds
+      duration: 180
+      lenght: 8
+  email:
+      verification-token:
+         duration: 86400
+  
+  successfully-login-logs:
+    days-to-store: 90
+  failed-login-attempt-logs:
+    days-to-store: 90
+  change-password-history:
+    days-to-store: 180  
+      
+  bruteforce:
+    login:
+      max_failed_login_attempt_single_account: 5
+      consider_only_failed_login_attempt_single_account_past_seconds: 300
+      max_failed_login_attempt_single_ip: 100
+      consider_only_failed_login_attempt_single_ip_past_seconds: 1200 
+    password_reset:
+      max_failed_password_reset_attempt_single_ip: 15
+      single_ip_password_reset_bruteforce_time_range: 3600
+      max_failed_password_reset_attempt_single_account: 5
+      single_account_password_reset_bruteforce_time_range: 3600   
+      reset_token_validity_seconds: 1200
+      #if change the token validity check that it not create conflict the batch DeleteResetPasswordRequestTasklet
+    change-password:
+      days-to-store: 600
+      days-to-forbit-reuse: 60
+  cors:
+    allowed_headers: Content-Type,X-Requested-With,accept,Origin,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization,Content-Disposition
+    exposed_headers: Access-Control-Allow-Origin,Access-Control-Allow-Credentials,Authorization,Content-Disposition
+    allowed_origins: "*"
+    allowed_methods: GET,PUT,POST,DELETE,PATCH
+    allow_credentials: true
+    max_age: 180
+
+
+StandardHMacSigner:
+  key: TEEW7tHf89OEbSHhC6QAmJG9rzlcFWUhJjwZNmWfoiU=
+  algorithm: SHA1
+
+#################### ASYNCH SETTING #######################
+spring-async:
+    core-pool-size: 5
+    max-pool-size: 50
+    queueCapacity: 10000
+    
+#################### TIME SETTING AND NAME #######################
+
+app: 
+  time-zone: UTC
+  #USE ONLY LETTERS DO NOT USE ID OF LENGHT MORE THAT THREE CHAR
+  company-id: ATM
+
+
+##########################FILE MANAGER####################################
+fileManager:
+  StandardFSFileManager:
+    basePath: 
+    
+temp-file-directory: 
+
+
+##########################TURNSTILE####################################
+turnstile:
+  secret.password: MLSCKAFURE9T7YGHVBNKCASYTR23T28NB76343737U
+
+##########################FIREBASE####################################
+firebase:
+  server:
+    key: 
+  api:
+    url: https://fcm.googleapis.com/fcm/send
+
+    
