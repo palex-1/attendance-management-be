@@ -40,7 +40,7 @@ public class UserProfileWorkTaskCoreService implements GenericService {
 			return this.buildUnauthorizedResponse();
 		}
 		
-		return findEnabledTaskOfUser(taskDescription, taskCode, pageable, user, includeDisabled);
+		return findEnabledTaskOfUser(taskDescription, taskCode, pageable, user, includeDisabled, false);
 	}
 
 	//must be call from a user that has the permission to read users infos
@@ -52,15 +52,15 @@ public class UserProfileWorkTaskCoreService implements GenericService {
 			return this.buildNotFoundResponse();
 		}
 		
-		return findEnabledTaskOfUser(taskDescription, taskCode, pageable, user, includeDisabled);
+		return findEnabledTaskOfUser(taskDescription, taskCode, pageable, user, includeDisabled, true);
 	}
 	
 	private GenericResponse<Page<WorkTaskDTO>> findEnabledTaskOfUser(String taskDescription, String taskCode,
-			Pageable pageable, UserProfile user, boolean includeDisabled) {
+			Pageable pageable, UserProfile user, boolean includeDisabled, boolean includeBudgetInfo) {
 		List<WorkTask> tasks = this.teamComponentTaskService.findAllWorkTaskOfUser(user, taskDescription, 
 				taskCode, pageable, includeDisabled);
 		
-		List<WorkTaskDTO> list = WorkTaskTransformer.mapToDTO(tasks);
+		List<WorkTaskDTO> list = WorkTaskTransformer.mapToDTO(tasks, includeBudgetInfo);
 		
 		long totalCount = this.teamComponentTaskService.countAllWorkTaskOfUser(user, taskDescription, taskCode, includeDisabled);
 		

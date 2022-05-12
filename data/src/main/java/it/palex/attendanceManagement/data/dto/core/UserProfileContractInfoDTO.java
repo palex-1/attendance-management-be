@@ -16,6 +16,7 @@ public class UserProfileContractInfoDTO implements DTO {
 	private Double bankHours;
 	private Date hiringDate;
 	private String employmentOffice;
+	private Double hourlyCost;
 	
 	public Integer getId() {
 		return id;
@@ -81,5 +82,14 @@ public class UserProfileContractInfoDTO implements DTO {
 		this.employmentOffice = employmentOffice;
 	}
 
+	public Double getHourlyCost() {
+		return hourlyCost;
+	}
+
+	public void setHourlyCost(Double hourlyCost) {
+		this.hourlyCost = hourlyCost;
+	}
+	
+	
 
 }

@@ -7,16 +7,21 @@
 	<parent>
 		<groupId>it.palex.attendanceManagement</groupId>
 		<artifactId>attendance-management</artifactId>
-		<version>1.0.0</version>
+		<version>${revision}</version>
 	</parent>
 	
 	<artifactId>library</artifactId>
 	<name>library</name>
-	<url>http://maven.apache.org</url>
 
 
 	<dependencies>
-  
+
+		<!-- https://mvnrepository.com/artifact/org.aspectj/aspectjtools -->
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjtools</artifactId>
+		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.jcodec/jcodec -->
 		<dependency>
 		    <groupId>org.jcodec</groupId>
@@ -30,25 +35,16 @@
 		    <version>${jcodec.version}</version>
 		</dependency>
 
-	
-		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
-		<dependency>
-		    <groupId>org.apache.commons</groupId>
-		    <artifactId>commons-lang3</artifactId>
-		</dependency>
-	
 		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
 		<dependency>
 		    <groupId>commons-io</groupId>
 		    <artifactId>commons-io</artifactId>
-		    <version>${commons-io.version}</version>
 		</dependency>
 		
 		<!-- https://mvnrepository.com/artifact/commons-validator/commons-validator -->
 		<dependency>
 		    <groupId>commons-validator</groupId>
 		    <artifactId>commons-validator</artifactId>
-		    <version>${commons-validator.version}</version>
 		</dependency>
 		
 		
@@ -87,13 +83,12 @@
 	        <artifactId>junit-jupiter-engine</artifactId>
 	        <scope>test</scope>
 	    </dependency>
-		
+
 		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
 		<dependency>
-		    <groupId>org.apache.commons</groupId>
-		    <artifactId>commons-lang3</artifactId>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
 		</dependency>
-		
 
 		
   </dependencies>

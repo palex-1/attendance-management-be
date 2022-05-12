@@ -35,6 +35,18 @@ public class TurnstileService implements BasicGenericService {
 		return this.turnstileRepository.save(turnstile);
 	}
 	
+	public Turnstile findByAuthToken(String authToken) {
+		if(authToken==null) {
+			throw new NullPointerException();
+		}
+		
+		BooleanBuilder cond = new BooleanBuilder();
+		cond.and(QT.authToken.eq(authToken));
+		
+		return this.getFirstResultFromIterable(
+					this.turnstileRepository.findAll(cond)
+				);
+	}
 	
 	public Turnstile findById(Long id) {
 		if(id==null) {

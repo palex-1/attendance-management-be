@@ -8,15 +8,20 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Base64;
-import java.util.Optional;
+import java.util.*;
 
 import javax.annotation.PostConstruct;
 
+import com.querydsl.core.BooleanBuilder;
+import it.palex.attendanceManagement.data.entities.QDocument;
+import it.palex.attendanceManagement.data.entities.core.QUserAttendance;
+import it.palex.attendanceManagement.library.utils.IterableUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
@@ -42,6 +47,12 @@ import it.palex.attendanceManagement.library.utils.ImageResizer;
 public class DocumentService {
 
 	private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(DocumentService.class);
+
+	private final QDocument QDoc = QDocument.document;
+
+	/** This is a temp path where file can be stored for temp use */
+	public static final String TEMP_PATH = "TEMP";
+	public static final String TEMP_FILE_DESCRIPTION = "THIS_IS_A_TEMPORARY_FILE";
 
 	private static final int BUFFER_SIZE = 1024;
 
@@ -145,7 +156,30 @@ public class DocumentService {
 		
 		return this.saveFileWithDefaultFM(fileNameWithExt, inputStream, userId+"", description);
 	}
-		
+
+	/**
+	 *
+	 * @param fileExt
+	 * @param inputStream
+	 * @return
+	 * @throws Exception if file saving error occurred
+	 * @throws NullPointerException if fileExt or inputStream are null
+	 * @throws IllegalArgumentException if fileExt start with a dot '.'
+	 */
+	public Document saveTempFileWithDefaultFM(String fileExt, InputStream inputStream) throws Exception{
+		if(fileExt==null){
+			throw new NullPointerException();
+		}
+		if(fileExt.trim().startsWith(".")){
+			throw new IllegalArgumentException("File extension cannot start with '.'");
+		}
+		UUID uuid = UUID.randomUUID();
+		String fileName = uuid.toString()+"."+fileExt.trim();
+
+		return this.saveFileWithDefaultFM(fileName, inputStream,
+				DocumentService.TEMP_PATH, DocumentService.TEMP_FILE_DESCRIPTION);
+	}
+
 	public Document saveFileWithDefaultFM(String fileNameWithExt, InputStream inputStream, 
 			String subfolder, String description) throws Exception {
 		if(fileNameWithExt==null || inputStream==null) {
@@ -294,6 +328,11 @@ public class DocumentService {
 		fileManager.deleteFile(document.getFilePath());
 		
 		this.documentRepo.delete(document);
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	public void deleteDocumentAndFileWithTransact(Document document) throws Exception {
+		this.deleteDocumentAndFile(document);
 	}
 	
 	public void deleteOnlyDocument(Document document) throws Exception {
@@ -559,5 +598,22 @@ public class DocumentService {
 		return null;
 	}
 
-	
+
+	public List<Document> findTempFilesCreatedBefore(Date createdBefore, PageRequest pageable) {
+		if(pageable==null || createdBefore==null){
+			throw new NullPointerException();
+		}
+		BooleanBuilder cond = new BooleanBuilder();
+		cond.and(QDoc.description.eq(TEMP_FILE_DESCRIPTION));
+
+		cond.and(QDoc.createdDate.loe(createdBefore));
+
+		List<Document> documents = IterableUtils.iterableToList(
+				this.documentRepo.findAll(cond, pageable)
+		);
+
+		return documents;
+	}
+
+
 }

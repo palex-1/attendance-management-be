@@ -5,6 +5,8 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
 
+import it.palex.attendanceManagement.auth.dto.ExportAttendanceRequestDTO;
+import it.palex.attendanceManagement.data.dto.documents.TicketDownloadDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import it.palex.attendanceManagement.core.dtos.turnstile.UserAttendanceAddRequest;
+import it.palex.attendanceManagement.core.dtos.turnstile.UserAttendanceAddSwitchedRequest;
 import it.palex.attendanceManagement.core.service.turnstile.UserAttendanceWebService;
 import it.palex.attendanceManagement.data.dto.core.UserAttendanceDTO;
 import it.palex.attendanceManagement.data.entities.enumTypes.AuthoritiesValues;
@@ -36,7 +39,19 @@ public class UserAttendanceController extends RestEndpoint {
 	
 	@Autowired
 	private UserAttendanceWebService userAttendanceWebService;
-		
+
+
+	@PostMapping(path = "exportAttendanceOfDay")
+	@PreAuthorize("hasAuthority('"+AuthoritiesValues.USER_ATTENDANCE_READ+"')")
+	@Loggable(logExecutionTime = true, logParameters = false, logResponseParameter = false)
+	public ResponseEntity<GenericResponse<TicketDownloadDTO>> exportAttendanceOfDay(
+			@RequestBody ExportAttendanceRequestDTO req) throws Exception {
+		GenericResponse<TicketDownloadDTO> res = this.userAttendanceWebService
+				.exportAttendanceOfDay(req);
+
+		return this.buildGenericResponse(res);
+	}
+
 	
 	@GetMapping(path = "findAll")
 	@PreAuthorize("hasAuthority('"+AuthoritiesValues.USER_ATTENDANCE_READ+"')")
@@ -82,6 +97,17 @@ public class UserAttendanceController extends RestEndpoint {
 		return this.buildGenericResponse(response);
 	}
 	
+	@PostMapping(path="switch")
+	@PreAuthorize("hasAuthority('"+AuthoritiesValues.USER_ATTENDANCE_CREATE+"')")
+	@Loggable(logExecutionTime = true, logParameters = false, logResponseParameter = false)
+	public ResponseEntity<GenericResponse<UserAttendanceDTO>> switchAttendance(
+			@RequestBody UserAttendanceAddSwitchedRequest attendance){
+		
+		GenericResponse<UserAttendanceDTO> response = this.userAttendanceWebService
+				.addNewAttendanceSwitched(attendance);
+					
+		return this.buildGenericResponse(response);
+	}
 	
 	@DeleteMapping(path="delete")
 	@PreAuthorize("hasAuthority('"+AuthoritiesValues.USER_ATTENDANCE_DELETE+"')")

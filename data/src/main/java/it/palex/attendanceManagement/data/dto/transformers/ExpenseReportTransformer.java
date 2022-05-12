@@ -26,6 +26,8 @@ public class ExpenseReportTransformer {
 		res.setProcessedBy(UserProfileTransformer.mapToSmallDTO(report.getProcessedBy()));
 		res.setMadeBy(UserProfileTransformer.mapToSmallDTO(report.getMadeBy()));
 		
+		res.setWorkTask(WorkTaskTransformer.mapToMinimalDTO(report.getWorkTask()));
+		
 		return res;
 	}
 
@@ -34,7 +36,7 @@ public class ExpenseReportTransformer {
 		if(list==null) {
 			return null;
 		}
-		List<ExpenseReportDTO> res = new ArrayList<ExpenseReportDTO>(list.size());
+		List<ExpenseReportDTO> res = new ArrayList<>(list.size());
 		
 		for (ExpenseReport expenseReport : list) {
 			res.add(mapToDTO(expenseReport));

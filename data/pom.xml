@@ -6,7 +6,7 @@
   <parent>
     <groupId>it.palex.attendanceManagement</groupId>
     <artifactId>attendance-management</artifactId>
-    <version>1.0.0</version>
+    <version>${revision}</version>
   </parent>
   
   
@@ -21,7 +21,7 @@
 		<dependency>
 			<groupId>it.palex.attendanceManagement</groupId>
 			<artifactId>library</artifactId>
-			<version>${attendanceManagement-library.version}</version>
+			<version>${revision}</version>
 		</dependency>
 		
 		
@@ -77,10 +77,9 @@
 		<dependency>
 			<groupId>com.mysema.maven</groupId>
 			<artifactId>apt-maven-plugin</artifactId>
-			<version>${apt-maven-plugin.version}</version>
 		</dependency>
-		
-		
+
+
   </dependencies>
   
   

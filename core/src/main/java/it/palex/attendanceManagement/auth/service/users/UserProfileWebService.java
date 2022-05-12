@@ -1,5 +1,6 @@
 package it.palex.attendanceManagement.auth.service.users;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -56,6 +57,7 @@ import it.palex.attendanceManagement.library.service.GenericService;
 import it.palex.attendanceManagement.library.utils.DateUtility;
 import it.palex.attendanceManagement.library.utils.GenericValidator;
 import it.palex.attendanceManagement.library.utils.HttpCodes;
+import it.palex.attendanceManagement.library.utils.NumberUtils;
 
 @Service
 public class UserProfileWebService implements GenericService {
@@ -146,7 +148,7 @@ public class UserProfileWebService implements GenericService {
 		profileDetails.setResidence(residenceDTO);
 		profileDetails.setUserProfile(userProfileDTO);
 		profileDetails.setContractInfo(UserProfileContractInfoTransformer.mapToDTO(
-				userProfile.getUserProfileContractInfo(), userProfile.getDateOfEmployment()));
+				userProfile.getUserProfileContractInfo(), userProfile.getDateOfEmployment(), true));
 		
 		return profileDetails;
 	}
@@ -453,6 +455,26 @@ public class UserProfileWebService implements GenericService {
 		return this.buildOkResponse(UserProfileAddressTransformer.mapToDTO(address));
 	}
 
+	@Transactional(rollbackFor = {Exception.class})
+	public GenericResponse<StringDTO> uploadImageProfile(String userId, MultipartFile file) throws Exception {
+		if(file==null || userId==null) {
+			return this.buildBadDataResponse();
+		}
+		
+		if(!NumberUtils.isAnIntegerString(userId)) {
+			return this.buildBadDataResponse();
+		}
+		
+		Integer userIdNumeric = Integer.parseInt(userId);
+		
+		UserProfile userProfile = this.userProfileSrv.findById(userIdNumeric);
+		
+		if(userProfile==null) {
+			return this.buildNotFoundResponse("User profile not found");
+		}
+		
+		return this.updateUserProfileImage(file, userProfile);
+	}
 	
 	@Transactional(rollbackFor = {Exception.class})
 	public GenericResponse<StringDTO> uploadImageProfile(MultipartFile file) throws Exception {
@@ -466,6 +488,10 @@ public class UserProfileWebService implements GenericService {
 			return buildUnauthorizedResponse();
 		}
 		
+		return this.updateUserProfileImage(file, userProfile);
+	}
+	
+	private GenericResponse<StringDTO> updateUserProfileImage(MultipartFile file, UserProfile userProfile) throws IOException, Exception {
 		Document document = this.documentService.saveImageWithDefaultFM(file.getOriginalFilename(),
 				file.getInputStream(), userProfile.getId()+"", StandardDocumentDescription.PROFILE_IMAGE.name());
 		
@@ -536,7 +562,7 @@ public class UserProfileWebService implements GenericService {
 		contractInfo.setWorkDayHours(req.getWorkDayHours());
 		contractInfo.setUserProfile(userProfile);
 		contractInfo.setEmploymentOffice(employmentOffice);
-		
+		contractInfo.setHourlyCost(req.getHourlyCost());
 		userProfile.setCompany(company);
 		userProfile.setUserProfileContractInfo(contractInfo);
 		
@@ -553,7 +579,7 @@ public class UserProfileWebService implements GenericService {
 	}
 
 
-	public GenericResponse<UserProfileContractInfoDTO> retrieveUserProfileContractInfo() {
+	public GenericResponse<UserProfileContractInfoDTO> retrieveUserProfileContractInfo(boolean includeCostDetails) {
 		UserProfile userProfile = this.currentAuthenticatedUserService.getCurrentAuthenticatedUserProfile();
 		
 		if(userProfile==null) {
@@ -561,7 +587,7 @@ public class UserProfileWebService implements GenericService {
 		}
 		
 		UserProfileContractInfoDTO res = UserProfileContractInfoTransformer.mapToDTO(
-				userProfile.getUserProfileContractInfo(), userProfile.getDateOfEmployment());
+				userProfile.getUserProfileContractInfo(), userProfile.getDateOfEmployment(), includeCostDetails);
 		
 		
 		return this.buildOkResponse(res);
@@ -601,6 +627,9 @@ public class UserProfileWebService implements GenericService {
 		
 		return this.buildOkResponse(UserProfileTransformer.mapToDTO(userProfile));
 	}
+
+
+	
 
 
 	

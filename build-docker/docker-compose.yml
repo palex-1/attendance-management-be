@@ -2,13 +2,11 @@ version: "3.1"
 services:
  
   attendance-management-backend:
-    image: gestionedipendenti/attendance-management-be:1.0.0
+    image: gestionedipendenti/attendance-management-be:1.1.0
     container_name: attendance-management-backend
     restart: always
     volumes:
       - backend-data:/opt/
-    #    -----------------UNCOMMENT THIS LINE IF YOU WANT TO ENABLE SSL -- YOU HAVE TO PROVIDE ALSO A VALID CERTIFICATE named certificate.p12------------------
-    #  - ./certificate.p12:/opt/certificate.p12
     environment:
       # replace the jwt value with a secret (just a random long string at least 54 chars)
       - SECURITY_JWT_SECRET=x8NbAp6tSEfsUHXUF46AElX6UyRTYhq33fOABk1oiAwGG24LoF4vHENCAcI70YdQwmLWV67TFQaSWjqo
@@ -17,13 +15,7 @@ services:
       - PERSISTENCE_DATASOURCE_PASSWORD=root
       - PERSISTENCE_DATASOURCE_USERNAME=postgres
       - FILE-MANAGER.STANDARD-FS.BASE-PATH=/opt/AppFiles/AttendanceManagement_Files
-      - TEMP-FILE-DIRECTORY=/opt/AppFiles/AttendanceManagement_Files/TEMP
-    #    -----------------UNCOMMENT THIS LINES IF YOU WANT TO ENABLE SSL---------------------
-    #  - SERVER_SSL_KEY-STORE=/opt/certificate.p12
-    #  - SERVER_SSL_KEY-STORE-PASSWORD=password
-    #  - SERVER_SSL_KEY-STORE-TYPE=pkcs12
-    #  - SERVER_SSL_KEY-ALIAS=localhost
-    #  - SERVER_SSL_KEY-PASSWORD=password
+
 
     networks:
       - attendancemanagementnet
@@ -36,7 +28,7 @@ services:
 
 
   attendance-management-frontend:
-    image: gestionedipendenti/attendance-management-fe:1.0.0
+    image: gestionedipendenti/attendance-management-fe:1.1.0
     container_name: attendance-management-frontend
     restart: always
     environment:
@@ -71,7 +63,7 @@ services:
 
 
   database-initializator-migrator:
-    image: gestionedipendenti/attendance-management-db-init-migrate:1.0.0
+    image: gestionedipendenti/attendance-management-db-init-migrate:1.1.0
     container_name: database-initializator-migrator
     environment:
       - DATABASE_USER=postgres

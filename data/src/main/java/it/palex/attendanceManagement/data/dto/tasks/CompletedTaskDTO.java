@@ -16,6 +16,9 @@ public class CompletedTaskDTO implements DTO {
 	private Boolean editable;
 	private WorkTaskDTO taskCode;
 	private UserProfileTinyDTO userProfile;
+	private String activityDescription;
+	private Double totalCost;
+
 
 	public Long getId() {
 		return id;
@@ -73,4 +76,19 @@ public class CompletedTaskDTO implements DTO {
 		this.userProfile = userProfile;
 	}
 
+	public String getActivityDescription() {
+		return activityDescription;
+	}
+
+	public void setActivityDescription(String activityDescription) {
+		this.activityDescription = activityDescription;
+	}
+
+	public Double getTotalCost() {
+		return totalCost;
+	}
+
+	public void setTotalCost(Double totalCost) {
+		this.totalCost = totalCost;
+	}
 }

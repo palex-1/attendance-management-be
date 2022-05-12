@@ -21,9 +21,19 @@ public class WorkTaskDTO implements DTO {
 	private Date deactivationDate;
 	private Boolean isEnabledForAllUsers;
 	private Boolean isAbsenceTask;
+	public Double totalBudget;
 	
 	private Boolean currentUserCanSeeDetails;
 
+	
+	public Double getTotalBudget() {
+		return totalBudget;
+	}
+
+	public void setTotalBudget(Double totalBudget) {
+		this.totalBudget = totalBudget;
+	}
+	
 	public String getTaskCode() {
 		return taskCode;
 	}

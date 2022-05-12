@@ -8,7 +8,7 @@ import it.palex.attendanceManagement.data.entities.CompletedTask;
 
 public class CompletedTaskTransformer {
 
-	public static CompletedTaskDTO mapToDTO(CompletedTask task) {
+	public static CompletedTaskDTO mapToDTO(CompletedTask task, boolean includeCosts) {
 		if(task==null) {
 			return null;
 		}
@@ -17,14 +17,19 @@ public class CompletedTaskTransformer {
 		res.setEditable(task.getEditable());
 		res.setId(task.getId());
 		res.setSmartworked(task.getSmartworked());
-		res.setTaskCode(WorkTaskTransformer.mapToDTO(task.getTaskCode()));
+		res.setTaskCode(WorkTaskTransformer.mapToDTO(task.getTaskCode(), includeCosts));
 		res.setUserProfile(UserProfileTransformer.mapToTinyDTO(task.getUserProfile()));
 		res.setWorkedHours(task.getWorkedHours());
+		res.setActivityDescription(task.getActivityDescription());
 		
+		if(includeCosts) {
+			res.setTotalCost(task.getTotalCost());
+		}
+				
 		return res;
 	}
 	
-	public static List<CompletedTaskDTO> mapToDTO(List<CompletedTask> tasks) {
+	public static List<CompletedTaskDTO> mapToDTO(List<CompletedTask> tasks, boolean includeCosts) {
 		if(tasks==null) {
 			return null;
 		}
@@ -32,7 +37,7 @@ public class CompletedTaskTransformer {
 		List<CompletedTaskDTO> res = new ArrayList<>(tasks.size());
 		
 		for (CompletedTask completedTask : tasks) {
-			res.add(mapToDTO(completedTask));
+			res.add(mapToDTO(completedTask, includeCosts));
 		}
 		
 		return res;

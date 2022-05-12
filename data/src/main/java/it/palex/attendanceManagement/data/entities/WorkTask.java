@@ -74,8 +74,7 @@ public class WorkTask extends AuditableEntity implements DatabaseCheckableEntity
     @NotNull
     @Column(name = "is_absence_task")
     private Boolean isAbsenceTask;
-    
-    
+        
     @Basic(optional = false)
     @NotNull
     @Column(name = "activation_date")
@@ -85,6 +84,12 @@ public class WorkTask extends AuditableEntity implements DatabaseCheckableEntity
     @Column(name = "deactivation_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date deactivationDate;
+    
+    @Column(name = "total_budget")
+    @Basic(optional = false)
+    @NotNull
+    private Double totalBudget;
+    
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "taskCode")
     private List<CompletedTask> completedTaskList;
@@ -101,11 +106,12 @@ public class WorkTask extends AuditableEntity implements DatabaseCheckableEntity
 				&& isValidTaskDescription(this.taskDescription)
 				 && isValidClientVatNum(this.clientVatNum)
 				  && isValidBillable(this.billable)
-				     && isValidActivationDate(this.activationDate)
-				      && isValidDeactivationDate(this.deactivationDate)
-				      	&& areAdmissibleActivationDeactivation(this.activationDate, this.deactivationDate)
-				      	 && isValidIsEnabledForAllUser(this.isEnabledForAllUser)
-				      	 && isValidIsAbsenceTask(this.isAbsenceTask);
+				   && isValidActivationDate(this.activationDate)
+				   && isValidDeactivationDate(this.deactivationDate)
+				   && areAdmissibleActivationDeactivation(this.activationDate, this.deactivationDate)
+				   && isValidIsEnabledForAllUser(this.isEnabledForAllUser)
+				   && isValidIsAbsenceTask(this.isAbsenceTask)
+				   && isValidTotalBudget(this.totalBudget);
 		
 		return isValid;
 	}
@@ -155,9 +161,25 @@ public class WorkTask extends AuditableEntity implements DatabaseCheckableEntity
 		return true;
     }
     
-    
+    public Double getTotalBudget() {
+		return totalBudget;
+	}
 
-    public String getClientVatNum() {
+	public void setTotalBudget(Double totalBudget) {
+		this.totalBudget = totalBudget;
+	}
+
+	public static boolean isValidTotalBudget(Double totalBudget) {
+		if(totalBudget==null) {
+			return false;
+		}
+		if(totalBudget.doubleValue() < 0d) {
+			return false;
+		}
+		return true;
+	}
+
+	public String getClientVatNum() {
 		return clientVatNum;
 	}
 

@@ -28,8 +28,12 @@ import it.palex.attendanceManagement.data.entities.enumTypes.GlobalConfiguration
 import it.palex.attendanceManagement.data.exceptions.InvalidConfigurationException;
 import it.palex.attendanceManagement.data.service.core.GlobalConfigurationsService;
 import it.palex.attendanceManagement.library.utils.StringUtility;
+import org.springframework.stereotype.Component;
 
+@Component("SendGridEmailSender")
 public class SendGridEmailSenderService implements EmailSenderService {
+
+	public static final String COMPONENT_BEAN_NAME = "SendGridEmailSender";
 
 	private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SendGridEmailSenderService.class);
 
@@ -119,7 +123,7 @@ public class SendGridEmailSenderService implements EmailSenderService {
 	    
 	    
 	    
-	    InputStream stream = GmailEmailSenderService.class.getClassLoader().getResourceAsStream("logo.png");
+	    InputStream stream = SendGridEmailSenderService.class.getClassLoader().getResourceAsStream("logo.png");
 		
 		if(stream!=null) {
 			Attachments companyLogo = new Attachments(); 

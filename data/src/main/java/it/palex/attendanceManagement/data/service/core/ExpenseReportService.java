@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.querydsl.core.BooleanBuilder;
 
 import it.palex.attendanceManagement.data.entities.UserProfile;
+import it.palex.attendanceManagement.data.entities.WorkTask;
 import it.palex.attendanceManagement.data.entities.core.ExpenseReport;
 import it.palex.attendanceManagement.data.entities.core.QExpenseReport;
 import it.palex.attendanceManagement.data.exceptions.DataCannotBeInsertedInDatabase;
@@ -136,6 +137,18 @@ public class ExpenseReportService implements BasicGenericService {
 		List<ExpenseReport> res = this.iterableToList(this.expenseReportRepository.findAll(cond));
 
 		return res;
+	}
+
+
+	public long countExpensesOfTask(WorkTask workTask) {
+		if(workTask==null) {
+			throw new NullPointerException();
+		}
+		BooleanBuilder cond = new BooleanBuilder();
+		cond.and(QER.workTask.isNotNull());
+		cond.and(QER.workTask.id.eq(workTask.getId()));
+		
+		return this.expenseReportRepository.count(cond);
 	}
 	
 	

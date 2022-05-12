@@ -17,6 +17,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import it.palex.attendanceManagement.data.entities.UserProfile;
+import it.palex.attendanceManagement.data.entities.WorkTask;
 import it.palex.attendanceManagement.data.entities.enumTypes.ExpenseReportStatusEnum;
 import it.palex.attendanceManagement.data.entities.generic.AuditableEntity;
 import it.palex.attendanceManagement.data.entities.generic.DatabaseCheckableEntity;
@@ -95,6 +96,10 @@ public class ExpenseReport extends AuditableEntity implements DatabaseCheckableE
 	private UserProfile processingBy;
 	
 	
+	@JoinColumn(name = "task_id", referencedColumnName = "id")
+	@ManyToOne(optional = true)
+	private WorkTask workTask;
+	
 	
 	public ExpenseReport() {
 	}
@@ -106,10 +111,13 @@ public class ExpenseReport extends AuditableEntity implements DatabaseCheckableE
 				&& isValidStatus(this.status) 
 				&& isValidMadeBy(this.madeBy) && isValidProcessedBy(this.processedBy)
 				&& isValidLocation(this.location) && isValidProcessingBy(this.processingBy)
-				&& isValidAmountAccepted(this.amountAccepted);
+				&& isValidAmountAccepted(this.amountAccepted)
+				&& isValidWorkTask(this.workTask);
 		
 		return isValid;
 	}
+
+	
 
 	public String whyCannotBeInsertedInDatabase() {
 		String why  = "title:"+this.title+", dateOfExpence:"+this.dateOfExpence
@@ -282,6 +290,20 @@ public class ExpenseReport extends AuditableEntity implements DatabaseCheckableE
 	}
 
 	public static boolean isValidProcessingBy(UserProfile processingBy) {
+		return true;
+	}
+	
+	
+	
+	public WorkTask getWorkTask() {
+		return workTask;
+	}
+
+	public void setWorkTask(WorkTask workTask) {
+		this.workTask = workTask;
+	}
+
+	public static boolean isValidWorkTask(WorkTask workTask) {
 		return true;
 	}
 	

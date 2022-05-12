@@ -6,8 +6,8 @@ public class UserAttendanceAddRequest {
 
 	private String type;
 	private Date timestamp;
-	private Long turnstileId;
 	private Integer userProfileId;
+	private Long turnstileId;
 
 
 	public String getType() {
@@ -25,15 +25,6 @@ public class UserAttendanceAddRequest {
 	public void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
 	}
-
-	public Long getTurnstileId() {
-		return turnstileId;
-	}
-
-	public void setTurnstileId(Long turnstileId) {
-		this.turnstileId = turnstileId;
-	}
-
 	public Integer getUserProfileId() {
 		return userProfileId;
 	}
@@ -42,4 +33,11 @@ public class UserAttendanceAddRequest {
 		this.userProfileId = userProfileId;
 	}
 
+	public Long getTurnstileId() {
+		return turnstileId;
+	}
+
+	public void setTurnstileId(Long turnstileId) {
+		this.turnstileId = turnstileId;
+	}
 }

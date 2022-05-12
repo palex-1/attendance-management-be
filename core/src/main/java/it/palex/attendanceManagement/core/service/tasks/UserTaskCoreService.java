@@ -75,7 +75,7 @@ public class UserTaskCoreService implements GenericService {
 		
 		List<CompletedTask> tasks = this.completedTaskService.findAllTasksOfUserInDay(profile, day, pageable);
 		
-		List<CompletedTaskDTO> list = CompletedTaskTransformer.mapToDTO(tasks);
+		List<CompletedTaskDTO> list = CompletedTaskTransformer.mapToDTO(tasks, false);
 		
 		long totalCount = this.completedTaskService.countAllTasksOfUserInDay(profile, day);
 		
@@ -109,6 +109,10 @@ public class UserTaskCoreService implements GenericService {
 	public GenericResponse<CompletedTaskDTO> addNewTaskOfCurrentLoggedUserTasks(CompletedTaskAddDTO completedTask) {
 		if(completedTask==null || completedTask.getSmartworked()==null || completedTask.getDay()==null 
 			|| completedTask.getTaskCode()==null || completedTask.getWorkedHours()==null) {
+			return this.buildBadDataResponse();
+		}
+
+		if(!CompletedTask.isValidActivityDescription(completedTask.getActivityDescription())){
 			return this.buildBadDataResponse();
 		}
 		
@@ -173,9 +177,7 @@ public class UserTaskCoreService implements GenericService {
 				return this.buildUnprocessableEntity(StandardReturnCodesEnum.TOO_MUCH_ABSENCE_TASK_ADDED_IN_THIS_DAY);
 			}
 		}
-		
-		
-		
+
 		CompletedTask task = new CompletedTask();
 		task.setDay(completedTask.getDay());
 		task.setEditable(CompletedTask.DEFAULT_EDITABLE);
@@ -183,10 +185,19 @@ public class UserTaskCoreService implements GenericService {
 		task.setTaskCode(workTask);
 		task.setUserProfile(profile);
 		task.setWorkedHours(completedTask.getWorkedHours());
+		task.setActivityDescription(completedTask.getActivityDescription());
 		
+		if(profile.getUserProfileContractInfo()!=null) {
+			double totalCost = profile.getUserProfileContractInfo().getHourlyCost()*completedTask.getWorkedHours();
+			task.setTotalCost(totalCost);
+		}
+		else {
+			task.setTotalCost(0d);
+		}
+				
 		task = this.completedTaskService.saveOrUpdate(task);
 		
-		CompletedTaskDTO res = CompletedTaskTransformer.mapToDTO(task);
+		CompletedTaskDTO res = CompletedTaskTransformer.mapToDTO(task, false);
 		
 		return this.buildOkResponse(res);
 	}
@@ -203,7 +214,7 @@ public class UserTaskCoreService implements GenericService {
 			return this.buildNotFoundResponse();
 		}
 		
-		return this.findCompletedTaskOfMonthOfUserPrivate(profile, year, month);
+		return this.findCompletedTaskOfMonthOfUserPrivate(profile, year, month, true);
 	}
 
 	
@@ -214,12 +225,12 @@ public class UserTaskCoreService implements GenericService {
 			return this.buildUnauthorizedResponse();
 		}
 		
-		return this.findCompletedTaskOfMonthOfUserPrivate(profile, year, month);
+		return this.findCompletedTaskOfMonthOfUserPrivate(profile, year, month, false);
 	}
 	
 	
 	private GenericResponse<List<CompletedTaskDTO>> findCompletedTaskOfMonthOfUserPrivate(
-			UserProfile profile, Integer year, Integer month) {
+			UserProfile profile, Integer year, Integer month, boolean includeCosts) {
 		if(year==null || month==null) {
 			return this.buildBadDataResponse();
 		}
@@ -242,7 +253,7 @@ public class UserTaskCoreService implements GenericService {
 				profile, sort, DateUtility.startOfDayOfDate(startRange.getTime()), 
 				DateUtility.endOfDayOfDate(endRange.getTime()));
 		
-		List<CompletedTaskDTO> list = CompletedTaskTransformer.mapToDTO(completesTasks);
+		List<CompletedTaskDTO> list = CompletedTaskTransformer.mapToDTO(completesTasks, includeCosts);
 		
 		return this.buildOkResponse(list);
 	}
@@ -296,13 +307,21 @@ public class UserTaskCoreService implements GenericService {
 				
 		task.setSmartworked(completedTask.getSmartworked());
 		task.setWorkedHours(completedTask.getWorkedHours());
-
+		
+		if(profile.getUserProfileContractInfo()!=null) {
+			double totalCost = profile.getUserProfileContractInfo().getHourlyCost()*completedTask.getWorkedHours();
+			task.setTotalCost(totalCost);
+		}
+		else {
+			task.setTotalCost(0d);
+		}
+		
 		task = this.completedTaskService.saveOrUpdate(task);
 		
 		//delete food voucher request if the hours are less than 0
 		this.foodVoucherRequestWebService.sanitizeFoodVoucherRequest(profile, task.getDay());
 		
-		CompletedTaskDTO res = CompletedTaskTransformer.mapToDTO(task);
+		CompletedTaskDTO res = CompletedTaskTransformer.mapToDTO(task, false);
 		
 		return this.buildOkResponse(res);
 	}

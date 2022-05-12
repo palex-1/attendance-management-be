@@ -6,7 +6,7 @@
   <parent>
     <groupId>it.palex.attendanceManagement</groupId>
     <artifactId>attendance-management</artifactId>
-    <version>1.0.0</version>
+    <version>${revision}</version>
   </parent>
   
   
@@ -26,13 +26,13 @@
     	<dependency>
 			<groupId>it.palex.attendanceManagement</groupId>
 			<artifactId>library</artifactId>
-			<version>${attendanceManagement-library.version}</version>
+			<version>${revision}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>it.palex.attendanceManagement</groupId>
 			<artifactId>data</artifactId>
-			<version>${attendanceManagement-data.version}</version>
+			<version>${revision}</version>
 		</dependency>
 		
 		<dependency>
@@ -49,35 +49,31 @@
 		<dependency>
 			<groupId>com.sun.mail</groupId>
 			<artifactId>javax.mail</artifactId>
-			<version>${javax.mail.version}</version>
 		</dependency>
 		
 		<!-- https://mvnrepository.com/artifact/com.twilio.sdk/twilio -->
 		<dependency>
 		    <groupId>com.twilio.sdk</groupId>
 		    <artifactId>twilio</artifactId>
-		    <version>${twilio.version}</version>
 		</dependency>
-		
-		<!-- https://mvnrepository.com/artifact/com.sendgrid/sendgrid-java -->
-		<dependency>
-		    <groupId>com.sendgrid</groupId>
-		    <artifactId>sendgrid-java</artifactId>
-		</dependency>
+
+	  <!-- https://mvnrepository.com/artifact/com.sendgrid/sendgrid-java -->
+	  <dependency>
+		  <groupId>com.sendgrid</groupId>
+		  <artifactId>sendgrid-java</artifactId>
+	  </dependency>
 		
 		
 		<!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
 		<dependency>
 		    <groupId>org.apache.poi</groupId>
 		    <artifactId>poi</artifactId>
-		    <version>${poi.version}</version>
 		</dependency>
 		
 		<!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->
 		<dependency>
 		    <groupId>org.apache.poi</groupId>
 		    <artifactId>poi-ooxml</artifactId>
-		    <version>${poi-ooxml.version}</version>
 		</dependency>
 		
 		
@@ -86,35 +82,24 @@
 		    <groupId>org.springframework.boot</groupId>
 		    <artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
-		
-		<!-- https://mvnrepository.com/artifact/com.sendgrid/sendgrid-java -->
-		<dependency>
-		    <groupId>com.sendgrid</groupId>
-		    <artifactId>sendgrid-java</artifactId>
-		</dependency>
-		
-		
+
         <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->
 		<dependency>
 		    <groupId>org.apache.pdfbox</groupId>
 		    <artifactId>pdfbox</artifactId>
-		    <version>${pdfbox.version}</version>
 		</dependency>
 
 		
 		<dependency>
 		    <groupId>com.google.zxing</groupId>
 		    <artifactId>core</artifactId>
-		    <version>${com.google.zxing.version}</version>
 		</dependency>
 		
 		<dependency>
 		    <groupId>com.google.zxing</groupId>
 		    <artifactId>javase</artifactId>
-		    <version>${com.google.zxing.version}</version>
 		</dependency>
-		
-		
+
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt</artifactId>

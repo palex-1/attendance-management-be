@@ -110,6 +110,16 @@ public abstract class AbstractDAO<T> {
 		}
 		return (Integer)o;
 	}
+
+	protected Double objectToDouble(Object o) {
+		if(o==null) {
+			return null;
+		}
+		if(! (o instanceof Double)) {
+			throw new IllegalArgumentException("Not a Double "+o.getClass());
+		}
+		return (Double)o;
+	}
     
 	protected Long bigDecimalToLong(Object o) {
 		if(o==null) {

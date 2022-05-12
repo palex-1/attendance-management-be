@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ import it.palex.attendanceManagement.data.dto.transformers.core.ExpenseReportEle
 import it.palex.attendanceManagement.data.entities.Document;
 import it.palex.attendanceManagement.data.entities.TicketDownload;
 import it.palex.attendanceManagement.data.entities.UserProfile;
+import it.palex.attendanceManagement.data.entities.WorkTask;
 import it.palex.attendanceManagement.data.entities.core.ExpenseReport;
 import it.palex.attendanceManagement.data.entities.core.ExpenseReportElement;
 import it.palex.attendanceManagement.data.entities.enumTypes.ExpenseReportStatusEnum;
@@ -40,6 +42,7 @@ import it.palex.attendanceManagement.data.service.core.ExpenseReportService;
 import it.palex.attendanceManagement.data.service.core.TaskCompletionsLocksService;
 import it.palex.attendanceManagement.data.service.documento.DocumentService;
 import it.palex.attendanceManagement.data.service.documento.TicketDownloadService;
+import it.palex.attendanceManagement.data.service.incarico.WorkTaskService;
 import it.palex.attendanceManagement.library.exception.StandardReturnCodesEnum;
 import it.palex.attendanceManagement.library.rest.GenericResponse;
 import it.palex.attendanceManagement.library.rest.dtos.StringDTO;
@@ -47,13 +50,15 @@ import it.palex.attendanceManagement.library.service.GenericService;
 import it.palex.attendanceManagement.library.utils.DateUtility;
 import it.palex.attendanceManagement.library.utils.HttpCodes;
 import it.palex.attendanceManagement.library.utils.StringUtility;
-import net.logstash.logback.encoder.org.apache.commons.lang3.BooleanUtils;
 
 @Service
 public class ExpenseReportWebService implements GenericService {
 
 	@Autowired
 	private ExpenseReportService expenseReportService;
+	
+	@Autowired
+	private WorkTaskService workTaskService;
 	
 	@Autowired
 	private ExpenseReportElementService expenseReportElementService;
@@ -108,6 +113,20 @@ public class ExpenseReportWebService implements GenericService {
 		report.setMadeBy(profile);
 		report.setStatus(ExpenseReportStatusEnum.TO_BE_PROCESSED.name());
 		report.setTitle(StringUtils.trim(req.getTitle()));
+		
+		if(req.getTaskCode()==null) {
+			report.setWorkTask(null);
+		}else {
+			WorkTask task = this.workTaskService.findByTaskCode(req.getTaskCode());
+			
+			if(task==null) {
+				return this.buildNotFoundResponse("Task not found");
+			}
+			
+			report.setWorkTask(task);
+		}
+		
+		
 		if(!report.canBeInsertedInDatabase()) {
 			return this.buildBadDataResponse();
 		}
@@ -355,6 +374,19 @@ public class ExpenseReportWebService implements GenericService {
 		if(!StringUtils.equals(report.getStatus(), ExpenseReportStatusEnum.TO_BE_PROCESSED.name())){
 			return this.buildUnprocessableEntity(StandardReturnCodesEnum.REPORT_CANNOT_BE_MODIFIED);
 		}
+		
+		if(updateReq.getTaskCode()==null) {
+			report.setWorkTask(null);
+		}else {
+			WorkTask task = this.workTaskService.findByTaskCode(updateReq.getTaskCode());
+			
+			if(task==null) {
+				return this.buildNotFoundResponse("Task not found");
+			}
+			
+			report.setWorkTask(task);
+		}
+		
 		
 		report.setDateOfExpence(updateReq.getDateOfExpence());
 		report.setLocation(updateReq.getLocation());

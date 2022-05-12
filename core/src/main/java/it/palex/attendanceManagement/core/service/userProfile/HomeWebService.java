@@ -41,7 +41,7 @@ public class HomeWebService implements GenericService {
 		
 		if(contract!=null) {
 			UserProfileContractInfoDTO contractDTO = UserProfileContractInfoTransformer.mapToDTO(contract,
-					profile.getDateOfEmployment());
+					profile.getDateOfEmployment(), false);
 			
 			home.setContractInfo(contractDTO);
 		}

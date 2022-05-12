@@ -68,6 +68,10 @@ public class CompletedTaskRepositoryCustomImpl extends AbstractDAO<CompletedTask
             .from(QCompletedTask.completedTask)
             .where(cond);
 
+		JPQLQuery<Double> sumOfCost = JPAExpressions.select(
+						QCompletedTask.completedTask.totalCost.sum().castToNum(Double.class).coalesce(0d))
+				.from(QCompletedTask.completedTask)
+				.where(cond);
 		
 		
 		BooleanBuilder condQuery = new BooleanBuilder();
@@ -113,7 +117,8 @@ public class CompletedTaskRepositoryCustomImpl extends AbstractDAO<CompletedTask
 				QUserProfile.userProfile.company.id.as("companyId"), 
 				QUserProfile.userProfile.company.name.as("companyName"),
 				QUserProfile.userProfile.company.description.as("companyDescription"),
-				Expressions.as(sumOfWorkedHours, "sumOfWorkedHours"))
+				Expressions.as(sumOfWorkedHours, "sumOfWorkedHours"),
+				Expressions.as(sumOfCost, "sumOfCost"))
 		.where(condQuery);
 		
 		
@@ -151,6 +156,8 @@ public class CompletedTaskRepositoryCustomImpl extends AbstractDAO<CompletedTask
 			
 			park.setWorkedHours(bigDecimalToLong(row[8]));
 
+			park.setSumOfCost(objectToDouble(row[9]));
+
 			summary.add(park);
 		}
 		
@@ -158,7 +165,35 @@ public class CompletedTaskRepositoryCustomImpl extends AbstractDAO<CompletedTask
 		return Pair.of(summary, totalCount);
 	}
 
+	@Override
+	public Double computeTotalHumanCost(WorkTask task, Date startDate, Date endDate) {
+		BooleanBuilder cond = new BooleanBuilder();
+		//cond.and(QCompletedTask.completedTask.taskCode.isAbsenceTask.isFalse());
+		cond.and(QCompletedTask.completedTask.taskCode.id.eq(task.getId()));
 
-	
-	
+		if(startDate!=null) {
+			cond.and(QCompletedTask.completedTask.day.goe(startDate));
+		}
+		if(endDate!=null) {
+			cond.and(QCompletedTask.completedTask.day.loe(endDate));
+		}
+
+		JPAQuery<Double> query = new JPAQuery<Double>(em);
+
+		query.select(QCompletedTask.completedTask.totalCost.sum().castToNum(Double.class).coalesce(0d))
+				.from(QCompletedTask.completedTask)
+				.where(cond);
+
+		List<Double> resultSet = query.fetch();
+
+		if(resultSet.size()>1){
+			throw new RuntimeException("Internal error resultSet.size()>1");
+		}
+
+		Double res = resultSet.get(0);
+
+		return res;
+	}
+
+
 }

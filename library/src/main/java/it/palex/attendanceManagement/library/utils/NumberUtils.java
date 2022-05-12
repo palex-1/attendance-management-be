@@ -30,6 +30,15 @@ public class NumberUtils {
 		}
 	}
 	
+	
+	public static boolean isAnIntegerString(String number) {
+		try {
+			Integer.parseInt(number);
+			return true;
+		}catch(Exception e) {
+			return false;
+		}
+	}
 	/**
 	 * 
 	 * @param number

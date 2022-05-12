@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import it.palex.attendanceManagement.auth.dto.UpdateUserEmailDTO;
 import it.palex.attendanceManagement.auth.dto.UpdateUserProfileDTO;
@@ -28,6 +30,7 @@ import it.palex.attendanceManagement.data.entities.enumTypes.AuthoritiesValues;
 import it.palex.attendanceManagement.data.entities.enumTypes.SupportedImageCompression;
 import it.palex.attendanceManagement.library.rest.GenericResponse;
 import it.palex.attendanceManagement.library.rest.RestEndpoint;
+import it.palex.attendanceManagement.library.rest.dtos.StringDTO;
 import it.palex.attendanceManagement.library.utils.aspects.Loggable;
 
 @RestController
@@ -126,6 +129,17 @@ public class UserProfileController extends RestEndpoint {
     	return this.buildGenericResponse(res);	
 	}
 	
+	
+	@PostMapping("/image")
+    @Loggable(logExecutionTime = true, logParameters = false, logResponseParameter = false)
+	@PreAuthorize("hasAuthority('"+AuthoritiesValues.USER_PROFILE_UPDATE+"')")
+    public ResponseEntity<GenericResponse<StringDTO>> uploadImageProfile(
+    		@RequestPart("image") MultipartFile file,
+			@RequestPart("userId") String userId) throws Exception {
+        GenericResponse<StringDTO> response = this.userProfileWebService.uploadImageProfile(userId, file);
+        
+        return this.buildGenericResponse(response);
+    }
 	
 	
 }

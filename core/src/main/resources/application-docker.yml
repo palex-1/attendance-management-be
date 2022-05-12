@@ -110,18 +110,20 @@ app:
   #USE ONLY LETTERS DO NOT USE ID OF LENGHT MORE THAT THREE CHAR
   company-id: ATM
 
-
 ##########################FILE MANAGER####################################
 file-manager:
   standard-fs:
     base-path: 
-    
-temp-file-directory: 
+
+temp-files:
+  # 600 = 10 minutes
+  time-to-live-in-seconds: 600
 
 
 ##########################TURNSTILE####################################
 turnstile:
   secret.password: MLSCKAFURE9T7YGHVBNKCASYTR23T28NB76343737U
+  min-sec-to-wait-to-add-new-attendance: 60
 
 ##########################FIREBASE####################################
 firebase:

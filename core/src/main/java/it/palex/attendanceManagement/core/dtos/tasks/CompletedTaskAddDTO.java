@@ -13,6 +13,7 @@ public class CompletedTaskAddDTO implements DTO {
 	private Boolean smartworked;
 	private String taskCode;
 	private Integer userProfileId;
+	private String activityDescription;
 
 	public Short getWorkedHours() {
 		return workedHours;
@@ -54,4 +55,11 @@ public class CompletedTaskAddDTO implements DTO {
 		this.userProfileId = userProfileId;
 	}
 
+    public String getActivityDescription() {
+		return this.activityDescription;
+    }
+
+	public void setActivityDescription(String activityDescription) {
+		this.activityDescription = activityDescription;
+	}
 }

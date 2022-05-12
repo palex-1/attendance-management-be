@@ -619,25 +619,7 @@ public class TeamComponentTaskService implements GenericService {
 	}
 	
 	public boolean isPartOfTheTeam(String username, Long taskId) {
-		if(username==null || taskId==null) {
-			throw new NullPointerException();
-		}
-		WorkTask task = this.workTaskService.findById(taskId);
-		
-		if(task==null) {
-			return false; //the task is not found
-		}
-		
-		if(BooleanUtils.isTrue(task.getIsEnabledForAllUser())) {
-			return true;
-		}
-		
-		BooleanBuilder condition = new BooleanBuilder();
-		condition.and(QCTI.taskCode.id.eq(taskId));
-		condition.and(QCTI.userProfile.usersAuthDetails.username.equalsIgnoreCase(username));
-		condition.and(QCTI.deleted.isFalse());
-		
-		return this.teamComponentTaskRepo.count(condition)>0;
+		return this.teamComponentTaskRepo.isPartOfTheTeam(username, taskId);
 	}
 	
 	/**
@@ -685,24 +667,11 @@ public class TeamComponentTaskService implements GenericService {
 
 
 	private boolean isASpecialRole(TeamRole ruoloUserProfile) {
-		if(StringUtils.equals(ruoloUserProfile.getRole(), TeamRoleEnum.QA_REVIEWER.name()) || 
-				   StringUtils.equals(ruoloUserProfile.getRole(), TeamRoleEnum.DELIVERY_MANAGER.name()) || 
-				   StringUtils.equals(ruoloUserProfile.getRole(), TeamRoleEnum.PROJECT_MANAGER.name()) || 
-				   StringUtils.equals(ruoloUserProfile.getRole(), TeamRoleEnum.ACCOUNT_MANAGER.name()) ) {
-					return true;
-				}
-		return false;
+		return this.isASpecialRole(ruoloUserProfile.getRole());
 	}
 	
 	private boolean isASpecialRole(String role) {
-		if(StringUtils.equals(role, TeamRoleEnum.QA_REVIEWER.name()) || 
-			StringUtils.equals(role, TeamRoleEnum.DELIVERY_MANAGER.name()) || 
-		      StringUtils.equals(role, TeamRoleEnum.PROJECT_MANAGER.name()) || 
-				StringUtils.equals(role, TeamRoleEnum.ACCOUNT_MANAGER.name()) ) {
-			return true;
-		}
-		
-		return false;
+		return this.teamComponentTaskRepo.isASpecialRole(role);
 	}
 
 

@@ -7,7 +7,8 @@ import it.palex.attendanceManagement.data.entities.UserProfileContractInfo;
 
 public class UserProfileContractInfoTransformer {
 
-	public static UserProfileContractInfoDTO mapToDTO(UserProfileContractInfo contractInfo, Date hiringDate) {
+	public static UserProfileContractInfoDTO mapToDTO(UserProfileContractInfo contractInfo, Date hiringDate,
+			boolean includeCostInfo) {
 		if(contractInfo==null) {
 			return null;
 		}
@@ -19,6 +20,10 @@ public class UserProfileContractInfoTransformer {
 	 
 		if(contractInfo.getEmploymentOffice()!=null) {
 			res.setEmploymentOffice(contractInfo.getEmploymentOffice().getOfficeName());
+		}
+		
+		if(includeCostInfo) {
+			res.setHourlyCost(contractInfo.getHourlyCost());
 		}
 		
 		res.setLevel(UserLevelTransformer.mapToDTO(contractInfo.getLevel()));

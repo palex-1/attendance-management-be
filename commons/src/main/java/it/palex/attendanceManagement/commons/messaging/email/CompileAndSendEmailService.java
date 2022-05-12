@@ -28,16 +28,30 @@ import it.palex.attendanceManagement.library.utils.FileUtility;
 
 @Component
 public class CompileAndSendEmailService {
-	
+
 	@Autowired
-	private EmailSenderService emailSenderService;
-	
+	private EmailSenderFactory emailSenderFactory;
+
 	@Autowired
 	private MessageTemplateService messageTemplateSrv;
 	
     @Autowired
     private GlobalConfigurationsService globalConfigurationService;
-	
+
+
+	private EmailSenderService getEmailSenderService(){
+		GlobalConfigurations senderTypeConfig = this.globalConfigurationService.findByAreaAndKey(
+				GlobalConfigurationSettingsTuple.EMAIL_SENDER.AREA_NAME,
+				GlobalConfigurationSettingsTuple.EMAIL_SENDER.TYPE);
+
+		if(senderTypeConfig==null){
+			throw new IllegalArgumentException("Sender type is invalid");
+		}
+
+		EmailSenderService service = this.emailSenderFactory.getEmailSender(senderTypeConfig.getSettingValue());
+
+		return service;
+	}
     
 	public void sendWelcomeEmail(String destinationEmail, SupportedLangsEnumI18N lang, String nameOfUser) throws Exception {
 		MessageTemplate template = this.messageTemplateSrv.findByKey(MessageTypeEnum.WELCOME_EMAIL, lang);
@@ -109,9 +123,10 @@ public class CompileAndSendEmailService {
 		mail.setSubject(template.getSubject());
 		mail.setText(compiler.compileMsg());
 		mail.setToAddress(recipients);
-		
-		this.emailSenderService.sendEmail(mail);
-		
+
+		EmailSenderService emailSenderService = this.getEmailSenderService();
+
+		emailSenderService.sendEmail(mail);
 	}
 
 	private void compileAndSendEmail(MessageTemplate template, MessageCompileStrategy compiler, 
@@ -128,8 +143,10 @@ public class CompileAndSendEmailService {
 		mail.setText(compiler.compileMsg());
 		mail.setToAddress(Arrays.asList(destinationEmail));
 		mail.setImageResourcesToShow(imgs);
-		
-		this.emailSenderService.sendEmail(mail);
+
+		EmailSenderService emailSenderService = this.getEmailSenderService();
+
+		emailSenderService.sendEmail(mail);
 	}
 	
 	
@@ -142,8 +159,10 @@ public class CompileAndSendEmailService {
 		mail.setText(compiler.compileMsg());
 		mail.setToAddress(Arrays.asList(destinationEmail));
 		mail.setAttachment(attachments);
-		
-		this.emailSenderService.sendEmail(mail);
+
+		EmailSenderService emailSenderService = this.getEmailSenderService();
+
+		emailSenderService.sendEmail(mail);
 	}
 	
 	public static List<String> splitCsvEmailAddresses(String csvStr) {

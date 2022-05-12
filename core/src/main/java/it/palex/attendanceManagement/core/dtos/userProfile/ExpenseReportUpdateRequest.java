@@ -8,6 +8,7 @@ public class ExpenseReportUpdateRequest {
 	private String title;
 	private Date dateOfExpence;
 	private String location;
+	private String taskCode;
 
 	public Long getExpenseReportId() {
 		return expenseReportId;
@@ -39,6 +40,14 @@ public class ExpenseReportUpdateRequest {
 
 	public void setLocation(String location) {
 		this.location = location;
+	}
+
+	public String getTaskCode() {
+		return taskCode;
+	}
+
+	public void setTaskCode(String taskCode) {
+		this.taskCode = taskCode;
 	}
 
 }

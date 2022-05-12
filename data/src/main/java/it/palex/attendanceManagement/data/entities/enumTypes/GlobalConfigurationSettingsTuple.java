@@ -33,7 +33,13 @@ public class GlobalConfigurationSettingsTuple {
 		public static final String API_KEY = "API_KEY";
 		public static final String MAIL_FROM = "MAIL_FROM";
 	}
-	
+
+	public static class EMAIL_SENDER {
+		public static final String AREA_NAME = "EMAIL_SENDER";
+
+		public static final String TYPE = "TYPE";
+	}
+
 	public static class PROFILE_SMTP {
 		public static final String AREA_NAME = "PROFILE_SMTP";
 		
@@ -106,5 +112,10 @@ public class GlobalConfigurationSettingsTuple {
 		public static final String FERIE = "FERIE";
 		public static final String ROL = "ROL";
 	}
-	
+
+
+	public static class TASK_EXPENSE_TYPES {
+		public static String AREA_NAME = "EXPENSES_TYPES";
+	}
+
 }

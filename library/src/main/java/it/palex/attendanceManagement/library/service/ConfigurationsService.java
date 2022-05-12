@@ -13,4 +13,12 @@ public class ConfigurationsService {
 		return this.proxyType;
 	}
 
+	@Value("${temp-files.time-to-live-in-seconds:60}")
+	private int tempFileTimeToLiveSeconds;
+
+	public int getTempFileTimeToLiveSeconds() {
+		return this.tempFileTimeToLiveSeconds;
+	}
+
+
 }
