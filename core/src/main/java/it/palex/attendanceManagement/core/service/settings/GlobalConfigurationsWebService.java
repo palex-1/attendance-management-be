@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -142,6 +143,7 @@ public class GlobalConfigurationsWebService implements GenericService {
 		config.setSettingValue(value);
 		config.setEditable(true);
 		config.setVisible(true);
+		config.setSecret(BooleanUtils.toBoolean(toCreate.getSecret()));
 		
 		if(!config.canBeInsertedInDatabase()) {
 			return this.buildBadDataResponse();

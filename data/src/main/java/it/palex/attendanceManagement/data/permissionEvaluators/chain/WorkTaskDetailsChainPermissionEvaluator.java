@@ -1,5 +1,6 @@
 package it.palex.attendanceManagement.data.permissionEvaluators.chain;
 
+import it.palex.attendanceManagement.data.repository.incarico.TeamComponentTaskRepository;
 import org.codehaus.plexus.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,10 +14,10 @@ public class WorkTaskDetailsChainPermissionEvaluator  implements ChainPermission
 	public static final String PERMISSION_TO_CHECK = "TASK_DETAILS";
 	
 	@Autowired
-	private LastChainPermissionEvaluator nextInChain; //move this after add a new ring i chain
+	private TaskExpensesPermissionEvaluator nextInChain; //move this after add a new ring i chain
 
 	@Autowired
-	private TeamComponentTaskService teamComponentTaskService;
+	private TeamComponentTaskRepository teamComponentTaskRepository;
 	
 	
 	@Override
@@ -54,7 +55,7 @@ public class WorkTaskDetailsChainPermissionEvaluator  implements ChainPermission
 	}
 	
 	private boolean hasUpdatePermissionOnIncarico(String username, Long taskId) {
-		return teamComponentTaskService.isSpecialPartOfTheTeam(username, taskId);
+		return teamComponentTaskRepository.isSpecialPartOfTheTeam(username, taskId);
 	}
 	
 }

@@ -8,7 +8,7 @@ public class TurnstileDTO {
 	private String position;
 	private Boolean deactivated;
 	private String type;
-	
+	private String authToken;
 	
 
 	public Long getId() {
@@ -57,6 +57,14 @@ public class TurnstileDTO {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getAuthToken() {
+		return authToken;
+	}
+
+	public void setAuthToken(String authToken) {
+		this.authToken = authToken;
 	}
 
 	

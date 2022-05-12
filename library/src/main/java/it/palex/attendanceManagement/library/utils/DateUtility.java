@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.time.DateUtils;
 
@@ -236,8 +237,23 @@ public class DateUtility {
 	}
 
 	/**
+	 *
+	 * @param data
+	 * @return the date time formatted as HH:mm:ss
+	 */
+	public static String getFormattedTimeHHMMSS(Date data){
+		if(data==null){
+			return "";
+		}
+		DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+		formatter.setLenient(false);
+		String res = formatter.format(data);
+		return res;
+	}
+
+	/**
 	 * 
-	 * @param data with the format dd-MM-yyyy HH:mm:ss
+	 * @param date with the format dd-MM-yyyy HH:mm:ss
 	 * @return the data
 	 * @throws NullPointerException if the data is null
 	 * @throws ParseException if the format is wrong
@@ -253,7 +269,7 @@ public class DateUtility {
 	
 	/**
 	 * 
-	 * @param data with the format dd-MM-yyyy HH:mm:ss
+	 * @param date with the format dd-MM-yyyy HH:mm:ss
 	 * @return the data
 	 * @throws NullPointerException if the data is null
 	 * @throws ParseException if the format is wrong
@@ -276,7 +292,7 @@ public class DateUtility {
 	
 	/**
 	  * @return the Calendar of the easter day, Example: findHolyDay(2017) will return a Calendar : Sun Apr 16 00:00:00 CEST 2017
-	  * @throws IllegalArgumentexception If the year is before 1582 (since the algorithm only works on the Gregorian calendar).
+	  * @throws IllegalArgumentException If the year is before 1582 (since the algorithm only works on the Gregorian calendar).
 	  * 
 	   * Compute the day of the year that Easter falls on. Step names E1 E2 etc.,
 	   * are direct references to Knuth, Vol 1, p 155. 
@@ -309,7 +325,7 @@ public class DateUtility {
 
   /**
 	 * Add negative value to subtract
-	 * @param currentDateInUTC
+	 * @param date
 	 * @param years
 	 * @return
 	 */
@@ -319,7 +335,7 @@ public class DateUtility {
 
 	/**
 	 * Add negative value to subtract
-	 * @param currentDateInUTC
+	 * @param date
 	 * @param days
 	 * @return
 	 */
@@ -359,7 +375,7 @@ public class DateUtility {
 	
 	/**
 	 * Add negative value to subtract
-	 * @param creationDate
+	 * @param date
 	 * @param seconds
 	 * @return
 	 */
@@ -471,8 +487,55 @@ public class DateUtility {
 		return sameDay;
 	}
 
+	/**
+	 * 
+	 * @param date1
+	 * @param date2
+	 * @return the difference in seconds between date1 and date2 (is date2 is bigger than date1 the difference will be negative)
+	 */
+	public static long diffInSeconds(Date date1, Date date2) {
+		if(date1==null || date2==null) {
+			throw new NullPointerException("Null date at diffInSeconds date1:"+date1+", date2:"+date2);
+		}
+		
+		long seconds1 = TimeUnit.MILLISECONDS.toSeconds(date1.getTime());
+		long seconds2 = TimeUnit.MILLISECONDS.toSeconds(date2.getTime());
+		
+		return seconds1-seconds2;
+	}
+
+	/**
+	 *
+	 * @param date1
+	 * @param date2
+	 * @return the difference in days between date1 and date2 (is date2 is bigger than date1 the difference will be negative)
+	 */
+	public static long diffInDays(Date date1, Date date2) {
+		if(date1==null || date2==null) {
+			throw new NullPointerException("Null date at diffInSeconds date1:"+date1+", date2:"+date2);
+		}
+
+		long days1 = TimeUnit.MILLISECONDS.toDays(date1.getTime());
+		long days2 = TimeUnit.MILLISECONDS.toDays(date2.getTime());
+
+		return days1-days2;
+	}
+
 	
-	
+	public static String secondsToHHMMSS(int seconds){
+		if(seconds<0){
+			throw new IllegalArgumentException();
+		}
+		int sec = seconds % 60;
+		int min = (seconds / 60)%60;
+		int hours = (seconds/60)/60;
+
+		String strSec = (sec<10) ? "0"+sec : Integer.toString(sec);
+		String strmin = (min<10) ? "0"+min : Integer.toString(min);
+		String strHours = (hours<10) ? "0"+hours : Integer.toString(hours);
+
+		return strHours + ":" + strmin + ":" + strSec;
+	}
 	
 }
 

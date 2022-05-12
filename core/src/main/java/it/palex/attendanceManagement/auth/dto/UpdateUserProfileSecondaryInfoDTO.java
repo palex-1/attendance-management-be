@@ -8,7 +8,8 @@ public class UpdateUserProfileSecondaryInfoDTO {
 	private Integer workDayHours;
 	private Double vacationDays;
 	private Double leaveHours;
-	public String employmentOffice;
+	private String employmentOffice;
+	private Double hourlyCost;
 	
 	public Integer getUserProfileId() {
 		return userProfileId;
@@ -65,6 +66,16 @@ public class UpdateUserProfileSecondaryInfoDTO {
 	public void setEmploymentOffice(String employmentOffice) {
 		this.employmentOffice = employmentOffice;
 	}
+
+	public Double getHourlyCost() {
+		return hourlyCost;
+	}
+
+	public void setHourlyCost(Double hourlyCost) {
+		this.hourlyCost = hourlyCost;
+	}
+
+	
 
 	
 }

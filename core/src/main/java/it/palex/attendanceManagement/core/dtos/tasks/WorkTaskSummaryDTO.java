@@ -9,6 +9,7 @@ public class WorkTaskSummaryDTO implements DTO {
 	
 	private UserProfileSmallDTO userProfile;
 	private Long workedHours;
+	private Double totalCost;
 	
 	public UserProfileSmallDTO getUserProfile() {
 		return userProfile;
@@ -22,6 +23,12 @@ public class WorkTaskSummaryDTO implements DTO {
 	public void setWorkedHours(Long workedHours) {
 		this.workedHours = workedHours;
 	}
-	
-	
+
+	public Double getTotalCost() {
+		return totalCost;
+	}
+
+	public void setTotalCost(Double totalCost) {
+		this.totalCost = totalCost;
+	}
 }

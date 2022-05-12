@@ -20,6 +20,7 @@ public class UserProfileCreationRequestDTO {
 	private Integer workDayHours;
 	private Integer companyId;
 	private String employmentOffice;
+	private Double hourlyCost;
 
 	public String getUsername() {
 		return username;
@@ -149,5 +150,14 @@ public class UserProfileCreationRequestDTO {
 	public void setEmploymentOffice(String employmentOffice) {
 		this.employmentOffice = employmentOffice;
 	}
+
+	public Double getHourlyCost() {
+		return hourlyCost;
+	}
+
+	public void setHourlyCost(Double hourlyCost) {
+		this.hourlyCost = hourlyCost;
+	}
+
 
 }

@@ -1,11 +1,11 @@
 package it.palex.attendanceManagement.data.permissionEvaluators.chain;
 
+import it.palex.attendanceManagement.data.repository.incarico.TeamComponentTaskRepository;
 import org.codehaus.plexus.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import it.palex.attendanceManagement.data.entities.auth.UsersAuthDetails;
-import it.palex.attendanceManagement.data.service.incarico.TeamComponentTaskService;
 
 @Component
 public class TeamIncaricoChainPermissionEvaluator implements ChainPermissionEvaluatorComponent {
@@ -16,7 +16,7 @@ public class TeamIncaricoChainPermissionEvaluator implements ChainPermissionEval
 	private WorkTaskDetailsChainPermissionEvaluator nextInChain; //move this after add a new ring i chain
 	
 	@Autowired
-	private TeamComponentTaskService teamComponentTaskService;
+	private TeamComponentTaskRepository teamComponentTaskRepository;
 	
 	
 	@Override
@@ -66,14 +66,14 @@ public class TeamIncaricoChainPermissionEvaluator implements ChainPermissionEval
 	}
 	
 	private boolean hasReadPermissionOnIncarico(String username, Long taskId) {
-		return teamComponentTaskService.isPartOfTheTeam(username, taskId);
+		return teamComponentTaskRepository.isPartOfTheTeam(username, taskId);
 	}
 	
 	private boolean hasUpdatePermissionOnIncarico(String username, Long taskId) {
-		return teamComponentTaskService.isSpecialPartOfTheTeam(username, taskId);
+		return teamComponentTaskRepository.isSpecialPartOfTheTeam(username, taskId);
 	}
 	
 	private boolean hasDeletePermissionOnIncarico(String username, Long taskId) {
-		return teamComponentTaskService.isSpecialPartOfTheTeam(username, taskId);
+		return teamComponentTaskRepository.isSpecialPartOfTheTeam(username, taskId);
 	}
 }

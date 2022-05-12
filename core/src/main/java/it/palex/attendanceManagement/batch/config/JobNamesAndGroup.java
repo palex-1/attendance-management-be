@@ -11,6 +11,11 @@ public class JobNamesAndGroup {
 		public static final String JOB_NAME = "DELETE_SUCCESSFULLY_LOGIN_LOGS_TASKLET_JOB";
 		public static final String GROUP = "DELETE_SUCCESSFULLY_LOGIN_LOGS_TASKLET_JOB_GROUP";
 	}
+
+	public static class DELETE_TEMPORARY_FILES_TASKLET {
+		public static final String JOB_NAME = "DELETE_TEMPORARY_FILES_TASKLET_JOB";
+		public static final String GROUP = "DELETE_TEMPORARY_FILES_TASKLET_JOB_GROUP";
+	}
 	
 	public static class DELETE_FAILED_LOGIN_ATTEMPT_TASKLET {
 		public static final String JOB_NAME = "DELETE_FAILED_LOGIN_ATTEMPT_TASKLET_JOB";

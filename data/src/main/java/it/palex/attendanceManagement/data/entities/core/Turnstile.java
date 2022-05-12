@@ -39,6 +39,12 @@ public class Turnstile extends AuditableEntity implements DatabaseCheckableEntit
     @Column(name = "title")
     private String title;
     
+    public static final int AUTH_TOKEN = 64;
+    
+    @Size(max = AUTH_TOKEN)
+    @Column(name = "AUTH_TOKEN")
+    private String authToken;
+    
     public static final int DESCRIPTION_MAX_SIZE = 1000;
     
     @NotNull
@@ -74,16 +80,16 @@ public class Turnstile extends AuditableEntity implements DatabaseCheckableEntit
 	public boolean canBeInsertedInDatabase() {
 		boolean isValid = isValidTitle(this.title) && isValidDescription(this.description)
 				&& isValidPosition(this.position) && isValidDeactivated(this.deactivated)
-				&& isValidType(this.type);
+				&& isValidType(this.type) && isValidAuthToken(this.authToken);
 		
 		return isValid;
 	}
     
-
-	
+    
 	public String whyCannotBeInsertedInDatabase() {
 		String why = "title:"+this.title+", description:"+this.description
-					 +", position:"+this.position+", deactivated:"+this.deactivated;
+					 +", position:"+this.position+", deactivated:"+this.deactivated+
+					 ", authToken:"+this.authToken;
 		
 		return why;
 	}
@@ -115,7 +121,24 @@ public class Turnstile extends AuditableEntity implements DatabaseCheckableEntit
 		return true;
 	}
     
-    
+	public String getAuthToken() {
+		return authToken;
+	}
+
+	public void setAuthToken(String authToken) {
+		this.authToken = authToken;
+	}
+
+	public static boolean isValidAuthToken(String authToken) {
+		if(authToken==null) {
+			return true;
+		}
+		if(authToken.length()>AUTH_TOKEN) {
+			return false;
+		}
+		return true;
+	}
+	
     public String getDescription() {
         return description;
     }

@@ -12,7 +12,7 @@ public class UserProfileSettingsTransformer {
 		if(settings==null) {
 			return null;
 		}
-		List<UserProfileSettingsDTO> res = new ArrayList<>();
+		List<UserProfileSettingsDTO> res = new ArrayList<>(settings.size());
 		
 		for(UserProfileSetting setting: settings) {
 			res.add(mapToDTO(setting));

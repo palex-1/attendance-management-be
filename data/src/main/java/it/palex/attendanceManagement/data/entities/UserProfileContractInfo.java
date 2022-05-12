@@ -43,6 +43,12 @@ public class UserProfileContractInfo extends AuditableEntity implements Database
     @Column(name = "residual_leave_hours")
     private Double residualLeaveHours;
     
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "hourly_cost")
+    private Double hourlyCost;
+    
+    
     @JoinColumn(name = "level", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private UserLevel level;
@@ -66,7 +72,8 @@ public class UserProfileContractInfo extends AuditableEntity implements Database
 				&& isValidUserLevel(this.level) 
 				&& isValidResidualVacationDays(this.residualVacationDays)
 				&& isValidResidualLeaveHours(this.residualLeaveHours)
-				&& isValidUserProfile(this.userProfile);
+				&& isValidUserProfile(this.userProfile)
+				&& isValidHourlyCost(this.hourlyCost);
 		
 		return isValid;
 	}	
@@ -77,7 +84,8 @@ public class UserProfileContractInfo extends AuditableEntity implements Database
 					 +", level:"+this.level
 					 +", residualVacationDays:"+this.residualVacationDays
 					 +", residualLeaveHours:"+this.residualLeaveHours
-					 +", userProfile:"+this.userProfile;
+					 +", userProfile:"+this.userProfile
+					 +", hourlyCost:"+this.hourlyCost;
 		
 		return why;
 	}
@@ -164,6 +172,24 @@ public class UserProfileContractInfo extends AuditableEntity implements Database
     
     public static boolean isValidUserProfile(UserProfile userProfile) {
 		return userProfile!=null;
+	}
+    
+    public Double getHourlyCost() {
+		return hourlyCost;
+	}
+
+	public void setHourlyCost(Double hourlyCost) {
+		this.hourlyCost = hourlyCost;
+	}
+
+	public static boolean isValidHourlyCost(Double hourlyCost) {
+		if(hourlyCost==null) {
+			return false;
+		}
+		if(hourlyCost.doubleValue() < 0d) {
+			return false;
+		}
+		return true;
 	}
 
     @Override

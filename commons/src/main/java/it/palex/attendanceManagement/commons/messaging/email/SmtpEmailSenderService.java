@@ -10,7 +10,6 @@ import java.util.Set;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
-import javax.annotation.PostConstruct;
 import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -34,15 +33,19 @@ import it.palex.attendanceManagement.commons.messaging.Attachment;
 import it.palex.attendanceManagement.commons.messaging.Email;
 import it.palex.attendanceManagement.data.entities.GlobalConfigurations;
 import it.palex.attendanceManagement.data.entities.enumTypes.GlobalConfigurationSettingsTuple;
-import it.palex.attendanceManagement.data.exceptions.InvalidConfigurationException;
 import it.palex.attendanceManagement.data.service.core.GlobalConfigurationsService;
 import it.palex.attendanceManagement.data.utils.GlobalConfigurationUtils;
 import it.palex.attendanceManagement.library.utils.GenericValidator;
 import it.palex.attendanceManagement.library.utils.StringUtility;
+import net.sf.ehcache.config.InvalidConfigurationException;
+import org.springframework.stereotype.Component;
 
-public class GmailEmailSenderService implements EmailSenderService {
+@Component("SmtpEmailSender")
+public class SmtpEmailSenderService implements EmailSenderService {
 
-	private static final Logger logger = LogManager.getLogger(GmailEmailSenderService.class);
+	public static final String COMPONENT_BEAN_NAME = "SmtpEmailSender";
+
+	private static final Logger logger = LogManager.getLogger(SmtpEmailSenderService.class);
 
 	@Autowired
     private GlobalConfigurationsService globalConfigurationService;
@@ -50,15 +53,15 @@ public class GmailEmailSenderService implements EmailSenderService {
 	private Properties properties;
 	private Authenticator authenticator;
 	private String fromAddress;
-
-	public GmailEmailSenderService() {
+	
+	
+	public SmtpEmailSenderService() {
 	}
 	
 	
-	@PostConstruct
 	private void loadMailData() {
-		
-		List<GlobalConfigurations> propList = globalConfigurationService.findAllByArea(GlobalConfigurationSettingsTuple.PROFILE_SMTP.AREA_NAME);
+		List<GlobalConfigurations> propList = globalConfigurationService.findAllByArea(
+				GlobalConfigurationSettingsTuple.PROFILE_SMTP.AREA_NAME);
 
 		String hostNameStr = GlobalConfigurationUtils.getValueSkippingArea(propList, GlobalConfigurationSettingsTuple.PROFILE_SMTP.MAIL_SMTP_HOST);
 		String usernameStr = GlobalConfigurationUtils.getValueSkippingArea(propList, GlobalConfigurationSettingsTuple.PROFILE_SMTP.MAIL_SMTP_USER);
@@ -68,6 +71,7 @@ public class GmailEmailSenderService implements EmailSenderService {
 		String startTslEnabledStr = GlobalConfigurationUtils.getValueSkippingArea(propList, GlobalConfigurationSettingsTuple.PROFILE_SMTP.MAIL_SMTP_STARTTLS_ENABLE);
 		String mailSmtpSSLEnable = GlobalConfigurationUtils.getValueSkippingArea(propList, GlobalConfigurationSettingsTuple.PROFILE_SMTP.MAIL_SMTP_SSL_ENABLE);
 		String mailTransportProtocol = GlobalConfigurationUtils.getValueSkippingArea(propList, GlobalConfigurationSettingsTuple.PROFILE_SMTP.MAIL_TRANSPORT_PROTOCOL);
+		
 		
 		
 		if (StringUtility.isEmptyOrWhitespace(hostNameStr) || StringUtility.isEmptyOrWhitespace(usernameStr) 
@@ -112,8 +116,10 @@ public class GmailEmailSenderService implements EmailSenderService {
 	 */
 	public void sendEmail(Email mail) throws MessagingException {
 		if (mail == null) {
-			throw new NullPointerException();
+			throw new IllegalArgumentException();
 		}
+		this.loadMailData();
+
 		Session session = Session.getDefaultInstance(properties, this.authenticator);
 		
 		sendEmailImpl(mail, this.properties, session, this.fromAddress);
@@ -182,7 +188,7 @@ public class GmailEmailSenderService implements EmailSenderService {
 	        multipart.addBodyPart(textPart);
 			
 	        
-			InputStream stream = GmailEmailSenderService.class.getClassLoader().getResourceAsStream("logo.png");
+			InputStream stream = SmtpEmailSenderService.class.getClassLoader().getResourceAsStream("logo.png");
 			
 			DataSource ds = new ByteArrayDataSource(stream, "image/png");
 			
@@ -271,4 +277,5 @@ public class GmailEmailSenderService implements EmailSenderService {
 		}
 	}
 	
+
 }

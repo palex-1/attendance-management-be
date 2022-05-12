@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,9 +17,11 @@ import it.palex.attendanceManagement.core.dtos.turnstile.TurnstileUpdateRequest;
 import it.palex.attendanceManagement.data.dto.core.TurnstileDTO;
 import it.palex.attendanceManagement.data.dto.transformers.core.TurnstileTransformer;
 import it.palex.attendanceManagement.data.entities.core.Turnstile;
+import it.palex.attendanceManagement.data.entities.enumTypes.TurnstileTypeEnum;
 import it.palex.attendanceManagement.data.service.core.TurnstileService;
 import it.palex.attendanceManagement.library.rest.GenericResponse;
 import it.palex.attendanceManagement.library.service.GenericService;
+import it.palex.attendanceManagement.library.utils.crypto.TokenGenerator;
 
 @Service
 public class TurnstileWebService implements GenericService {
@@ -40,6 +43,13 @@ public class TurnstileWebService implements GenericService {
 		toCreate.setTitle(toAdd.getTitle());
 		toCreate.setType(toAdd.getType());
 		
+		String authToken = null;
+		if(StringUtils.equals(toAdd.getType() ,TurnstileTypeEnum.PHYSICAL.name())) {
+			authToken = TokenGenerator.generateSecureTokenOf64Characters();
+			toCreate.setAuthToken(authToken);
+		}
+		
+		
 		if(!toCreate.canBeInsertedInDatabase()) {
 			return this.buildBadDataResponse();
 		}
@@ -47,6 +57,7 @@ public class TurnstileWebService implements GenericService {
 		toCreate = this.turnstileService.saveOrUpdate(toCreate);
 				
 		TurnstileDTO dto = TurnstileTransformer.mapToDTO(toCreate);
+		dto.setAuthToken(authToken); //the token will be visible only the first time
 		
 		return this.buildOkResponse(dto);
 	}

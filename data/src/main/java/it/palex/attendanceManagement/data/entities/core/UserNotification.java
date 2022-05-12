@@ -13,8 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
+import it.palex.attendanceManagement.data.entities.generic.AuditableEntity;
 import org.apache.commons.lang3.StringUtils;
-import org.dom4j.tree.AbstractEntity;
 
 import it.palex.attendanceManagement.data.entities.UserProfile;
 import it.palex.attendanceManagement.data.entities.generic.DatabaseCheckableEntity;
@@ -25,7 +25,7 @@ import it.palex.attendanceManagement.data.entities.generic.DatabaseCheckableEnti
  */
 @Entity
 @Table(name = "user_notification")
-public class UserNotification extends AbstractEntity implements Serializable, DatabaseCheckableEntity {
+public class UserNotification extends AuditableEntity implements Serializable, DatabaseCheckableEntity {
 	
     private static final long serialVersionUID = 1L;
     

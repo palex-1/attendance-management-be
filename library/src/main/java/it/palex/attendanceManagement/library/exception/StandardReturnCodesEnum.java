@@ -69,6 +69,15 @@ public enum StandardReturnCodesEnum {
 	ONLY_ADMIN_CAN_ADD_ADMIN(435, "Only Admin can add Admin"),
 	
 	NOT_FOUND_EMPLOYMENT_OFFICE(436, "Employment Office Not found"),
+	
+	
+	TURNSTILE_IS_NOT_PHYSICAL(437, "Turnstile is not physical"),
+	
+	WAIT_TO_ADD_NEW_ATTENDANCE(438, "Please wait a while before try to add a new attendance again"),
+
+	EXPENSE_TYPE_NOT_VALID(439, "Expense Type is not valid"),
+
+	DATE_START_AFTER_DATE_END(440, "Date start after date end")
 	;
 	
 	

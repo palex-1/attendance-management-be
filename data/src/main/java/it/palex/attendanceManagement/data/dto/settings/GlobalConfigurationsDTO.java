@@ -12,6 +12,7 @@ public class GlobalConfigurationsDTO implements DTO {
 	private String settingValue;
 	private Boolean visible;
 	private Boolean editable;
+	private Boolean secret;
 
 	public Integer getId() {
 		return id;
@@ -61,6 +62,11 @@ public class GlobalConfigurationsDTO implements DTO {
 		this.editable = editable;
 	}
 
-	
+	public Boolean getSecret() {
+		return secret;
+	}
 
+	public void setSecret(Boolean secret) {
+		this.secret = secret;
+	}
 }

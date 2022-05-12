@@ -1,5 +1,6 @@
 package it.palex.attendanceManagement.core.config;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,7 +86,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedHeaders(allowedHeaders);
         configuration.setExposedHeaders(exposedHeaders);
-        configuration.setAllowedOrigins(allowedOrigins);
+        if(allowedOrigins.contains("*")){
+            configuration.addAllowedOriginPattern("*");
+        }else{
+            configuration.setAllowedOrigins(allowedOrigins);
+        }
+
         configuration.setAllowedMethods(allowedMethods);
         configuration.setAllowCredentials(allowCredentials);
         configuration.setMaxAge(maxAge);

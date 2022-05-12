@@ -12,6 +12,6 @@ import it.palex.attendanceManagement.data.entities.TeamComponentTask;
  */
 @Repository
 public interface TeamComponentTaskRepository extends JpaRepository<TeamComponentTask, Integer>, 
-			QuerydslPredicateExecutor<TeamComponentTask>{
+			QuerydslPredicateExecutor<TeamComponentTask>, TeamComponentTaskRepositoryCustom {
 
 }

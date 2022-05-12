@@ -26,6 +26,7 @@ import it.palex.attendanceManagement.data.permissionEvaluators.chain.ChainPermis
 import it.palex.attendanceManagement.data.permissionEvaluators.chain.WorkTaskDetailsChainPermissionEvaluator;
 import it.palex.attendanceManagement.data.repository.incarico.WorkTaskRepository;
 import it.palex.attendanceManagement.data.service.audit.CurrentAuthenticatedUserService;
+import it.palex.attendanceManagement.data.service.core.ExpenseReportService;
 import it.palex.attendanceManagement.library.exception.StandardReturnCodesEnum;
 import it.palex.attendanceManagement.library.rest.GenericResponse;
 import it.palex.attendanceManagement.library.rest.dtos.StringDTO;
@@ -57,6 +58,10 @@ public class WorkTaskService implements GenericService {
 	@Autowired
 	private WorkTaskDetailsChainPermissionEvaluator workTaskDetailsChainPermissionEvaluator;
 	
+	@Autowired
+	private ExpenseReportService expenseReportService;
+	
+	
 	
 	@Transactional(rollbackFor = Exception.class)
 	public GenericResponse<WorkTaskDTO> create(WorkTaskDTO task) {
@@ -84,14 +89,15 @@ public class WorkTaskService implements GenericService {
 		entity.setClientVatNum(task.getClientVat());
 		entity.setIsEnabledForAllUser(task.getIsEnabledForAllUsers());
 		entity.setIsAbsenceTask(task.getIsAbsenceTask());
+		entity.setTotalBudget(task.getTotalBudget());
 		
 		if (!entity.canBeInsertedInDatabase()) {
-			return this.buildBadDataResponse("incarico is not valid");
+			return this.buildBadDataResponse("The task is not valid");
 		}
 
 		entity = this.workTaskRepo.save(entity);
 
-		WorkTaskDTO out = WorkTaskTransformer.mapToDTO(entity);
+		WorkTaskDTO out = WorkTaskTransformer.mapToDTO(entity, true);
 		out.setCurrentUserCanSeeDetails(true);
 		
 		return this.buildOkResponse(out);
@@ -127,7 +133,7 @@ public class WorkTaskService implements GenericService {
 		incarico.setDeactivationDate(newDataAttivazione);
 
 		incarico = this.workTaskRepo.save(incarico);
-		WorkTaskDTO out = WorkTaskTransformer.mapToDTO(incarico);
+		WorkTaskDTO out = WorkTaskTransformer.mapToDTO(incarico, true);
 
 		return this.buildOkResponse(out, "Incarico Deactivated");
 	}
@@ -177,9 +183,10 @@ public class WorkTaskService implements GenericService {
 		inc.setClientVatNum(task.getClientVat());
 		inc.setDeactivationDate(task.getDeactivationDate());
 		inc.setTaskCode(task.getTaskCode());
+		inc.setTotalBudget(task.getTotalBudget());
 		
 		inc = this.workTaskRepo.save(inc);
-		WorkTaskDTO out = WorkTaskTransformer.mapToDTO(inc);
+		WorkTaskDTO out = WorkTaskTransformer.mapToDTO(inc, true);
 
 		return this.buildOkResponse(out, "Incarico Updated Successfully");
 	}
@@ -196,18 +203,25 @@ public class WorkTaskService implements GenericService {
 		if (taskCode == null) {
 			return this.buildBadDataResponse();
 		}
-		WorkTask incarico = this.findByTaskCode(taskCode);
-		if (incarico == null) {
+		WorkTask workTask = this.findByTaskCode(taskCode);
+		if (workTask == null) {
 			return this.buildNotFoundResponse(NOT_FOUND_ERROR);
 		}
 		long count = completedTaskService.countIncarichiEseguitiOfIncarico(taskCode);
 
 		if (count > 0) {
 			return this.buildNotAcceptableResponse(
-					"Cannot delete this Incarico because is used. Delete all incarico eseguito before");
+					"Cannot delete this work task because is used. Delete all completed work task before");
+		}
+		
+		long expensed = this.expenseReportService.countExpensesOfTask(workTask);
+				
+		if (expensed > 0) {
+			return this.buildNotAcceptableResponse(
+					"Cannot delete this work task because is used. Delete all work task expenses before");
 		}
 
-		this.workTaskRepo.delete(incarico);
+		this.workTaskRepo.delete(workTask);
 
 		return this.buildOkResponse(new StringDTO("Incarico successully deleted"));
 	}
@@ -237,7 +251,7 @@ public class WorkTaskService implements GenericService {
 							user, park.getId(), 
 							WorkTaskDetailsChainPermissionEvaluator.PERMISSION_TO_CHECK, ChainPermissions.READ.name());
 			
-			WorkTaskDTO dto = WorkTaskTransformer.mapToDTO(park);
+			WorkTaskDTO dto = WorkTaskTransformer.mapToDTO(park, true);
 			dto.setCurrentUserCanSeeDetails(currentUserCanSeeDetails);
 			
 			list.add(dto);
@@ -307,7 +321,8 @@ public class WorkTaskService implements GenericService {
 		boolean isValid = WorkTask.isValidTaskDescription(task.getTaskDescription())
 				&& WorkTask.isValidClientVatNum(task.getClientVat())
 				&& WorkTask.isValidBillable(task.getBillable())
-				&& WorkTask.isValidDeactivationDate(task.getDeactivationDate());
+				&& WorkTask.isValidDeactivationDate(task.getDeactivationDate())
+				&& WorkTask.isValidTotalBudget(task.getTotalBudget());
 
 		isValid = isValid && WorkTask.areAdmissibleActivationDeactivation(
 				oldDataAttivazione, task.getDeactivationDate());

@@ -82,7 +82,8 @@ public class WorkTaskDetailsWebService implements GenericService {
 			
 			dto.setUserProfile(user);
 			dto.setWorkedHours(workTaskSummaryPseudoEntity.getWorkedHours());
-			
+			dto.setTotalCost(workTaskSummaryPseudoEntity.getSumOfCost());
+
 			summary.add(dto);
 		}
 		
@@ -104,7 +105,7 @@ public class WorkTaskDetailsWebService implements GenericService {
 		Pair<List<CompletedTask>, Long> pair = this.completedTaskService.findCompletedTaskDetaildOfUserInDateRange(
 				userProfileId, taskId, startPark, endPark, pageable);
 		
-		List<CompletedTaskDTO> res = CompletedTaskTransformer.mapToDTO(pair.getKey());
+		List<CompletedTaskDTO> res = CompletedTaskTransformer.mapToDTO(pair.getKey(), true);
 		long totalCount = pair.getValue();
 		
 		return this.buildPageableOkResponse(res, totalCount, pageable);

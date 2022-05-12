@@ -251,6 +251,7 @@ public class RegistrationWebService implements GenericService {
 		contractInfo.setResidualVacationDays(toAdd.getInitialVacationDays());
 		contractInfo.setResidualLeaveHours(toAdd.getInitialLeaveHours());
 		contractInfo.setEmploymentOffice(employmentOffice);
+		contractInfo.setHourlyCost(toAdd.getHourlyCost());
 		
 		userProfile.setUserProfileContractInfo(contractInfo);
 		

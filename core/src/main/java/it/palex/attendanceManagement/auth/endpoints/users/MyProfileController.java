@@ -87,7 +87,7 @@ public class MyProfileController extends RestEndpoint {
     public ResponseEntity<GenericResponse<UserProfileContractInfoDTO>> retrieveUserProfileContractInfo(){
 	     
     	GenericResponse<UserProfileContractInfoDTO> res = 
-    			this.userProfileWebService.retrieveUserProfileContractInfo();
+    			this.userProfileWebService.retrieveUserProfileContractInfo(false);
     	
     	return this.buildGenericResponse(res);	
 	}

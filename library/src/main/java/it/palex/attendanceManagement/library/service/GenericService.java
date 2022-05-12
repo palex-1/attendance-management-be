@@ -113,6 +113,24 @@ public interface GenericService extends BasicGenericService {
 		return this.buildBadDataResponse(error.getMess(), error.getCode());
 	}
 	
+		default <T> GenericResponse<T> buildEnhanceYourCalmResponse(){
+		return new GenericResponse<T>(null, HttpCodes.ENHANCE_YOUR_CALM, "Enhance your calm"); 
+	}
+	
+	default <T> GenericResponse<T> buildEnhanceYourCalmResponse(String msg){
+		return new GenericResponse<T>(null, HttpCodes.ENHANCE_YOUR_CALM, msg); 
+	}
+	
+	default <T> GenericResponse<T> buildEnhanceYourCalmResponse(String msg, int subcode){
+		return new GenericResponse<T>(null, HttpCodes.ENHANCE_YOUR_CALM, msg, subcode); 
+	}
+	
+	default <T> GenericResponse<T> buildEnhanceYourCalmResponse(StandardReturnCodesEnum error) {
+		if(error==null) {
+			return this.buildEnhanceYourCalmResponse();
+		}
+		return this.buildEnhanceYourCalmResponse(error.getMess(), error.getCode());
+	}
 	
 	default <T> GenericResponse<T> buildForbiddenResponse(){
 		return new GenericResponse<T>(null, HttpCodes.FORBIDDEN, "Forbidden"); 

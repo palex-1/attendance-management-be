@@ -34,7 +34,13 @@ public class TaskSummaryService {
 		
 		return this.completedTaskRepo.findWorkTaskSummary(task, startDate, endDate, name, surname, email, pageable);
 	}
-	
-	
-	
+
+
+	public Double computeTotalHumanCost(WorkTask task, Date startDate, Date endDate) {
+		if(task==null) {
+			throw new NullPointerException();
+		}
+
+		return this.completedTaskRepo.computeTotalHumanCost(task, startDate, endDate);
+	}
 }

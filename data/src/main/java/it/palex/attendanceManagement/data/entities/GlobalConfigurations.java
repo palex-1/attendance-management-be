@@ -10,8 +10,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.dom4j.tree.AbstractEntity;
-
+import it.palex.attendanceManagement.data.entities.generic.AuditableEntity;
 import it.palex.attendanceManagement.data.entities.generic.DatabaseCheckableEntity;
 
 /**
@@ -20,7 +19,7 @@ import it.palex.attendanceManagement.data.entities.generic.DatabaseCheckableEnti
  */
 @Entity
 @Table(name = "global_configurations")
-public class GlobalConfigurations extends AbstractEntity implements  DatabaseCheckableEntity {
+public class GlobalConfigurations extends AuditableEntity implements  DatabaseCheckableEntity {
 	
 	private static final long serialVersionUID = -22834245279762931L;
 
@@ -66,6 +65,11 @@ public class GlobalConfigurations extends AbstractEntity implements  DatabaseChe
     @Column(name = "editable")
     private Boolean editable = true;
 
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "is_secret")
+    private Boolean secret = true;
+
     public GlobalConfigurations() {
     }
 
@@ -73,7 +77,7 @@ public class GlobalConfigurations extends AbstractEntity implements  DatabaseChe
 	public boolean canBeInsertedInDatabase() {
 		boolean isValid = isValidSettingArea(this.settingArea)  && isValidSettingKey(this.settingKey) 
 				&& isValidSettingValue(this.settingValue) && isValidVisible(this.visible)
-				&& isValidEditable(this.editable);
+				&& isValidEditable(this.editable) && isValidSecret(this.secret);
 		
 		return isValid;
 	}
@@ -81,7 +85,7 @@ public class GlobalConfigurations extends AbstractEntity implements  DatabaseChe
     @Override
 	public String whyCannotBeInsertedInDatabase() {
 		final String why = "settingArea:"+this.settingArea+", settingKey:"+ this.settingKey+", settingValue:"+ this.settingValue
-				+", visible:"+ this.visible+", editable:"+ this.editable;
+				+", visible:"+ this.visible+", editable:"+ this.editable+", secret:"+ this.secret;
 		
 		return why;
 	}
@@ -171,6 +175,18 @@ public class GlobalConfigurations extends AbstractEntity implements  DatabaseChe
     
     public static boolean isValidEditable(Boolean editable) {
     	return editable!=null;
+    }
+
+    public static boolean isValidSecret(Boolean secret){
+        return secret!=null;
+    }
+
+    public Boolean getSecret() {
+        return secret;
+    }
+
+    public void setSecret(Boolean secret) {
+        this.secret = secret;
     }
 
     @Override

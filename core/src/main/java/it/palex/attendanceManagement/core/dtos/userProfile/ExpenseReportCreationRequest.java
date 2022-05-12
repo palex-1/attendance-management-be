@@ -7,6 +7,7 @@ public class ExpenseReportCreationRequest {
 	private String title;
 	private Date dateOfExpence;
 	private String location;
+	private String taskCode;
 
 	public String getTitle() {
 		return title;
@@ -31,5 +32,14 @@ public class ExpenseReportCreationRequest {
 	public void setLocation(String location) {
 		this.location = location;
 	}
+
+	public String getTaskCode() {
+		return taskCode;
+	}
+
+	public void setTaskCode(String taskCode) {
+		this.taskCode = taskCode;
+	}
+
 
 }

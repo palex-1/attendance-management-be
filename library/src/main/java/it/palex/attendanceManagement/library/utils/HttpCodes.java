@@ -15,6 +15,7 @@ public class HttpCodes {
 	public static final int NOT_ACCEPTABLE = 406;
 	public static final int CONFLICT = 409;
 	public static final int UNSUPPORTED_MEDIA_TYPE = 415;
+	public static final int ENHANCE_YOUR_CALM = 420;
 	public static final int UNPROCESSABLE_ENTITY = 422;
 	public static final int TOO_MANY_REQUESTS = 429;
 

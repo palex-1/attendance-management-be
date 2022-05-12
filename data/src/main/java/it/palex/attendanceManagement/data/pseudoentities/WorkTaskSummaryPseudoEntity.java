@@ -9,6 +9,7 @@ public class WorkTaskSummaryPseudoEntity {
 	private String userPhoneNumber;
 
 	private Long workedHours;
+	private Double sumOfCost;
 
 	private Integer companyId;
 	private String companyName;
@@ -86,4 +87,11 @@ public class WorkTaskSummaryPseudoEntity {
 		this.companyDescription = companyDescription;
 	}
 
+	public Double getSumOfCost() {
+		return sumOfCost;
+	}
+
+	public void setSumOfCost(Double sumOfCost) {
+		this.sumOfCost = sumOfCost;
+	}
 }

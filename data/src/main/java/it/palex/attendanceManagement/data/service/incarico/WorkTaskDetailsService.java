@@ -50,7 +50,7 @@ public class WorkTaskDetailsService implements GenericService{
 		UserProfile qaReviewer = this.getQAReviewer(taskId);
 	
 		IncaricoDetailsOutDTO res = WorkTaskTransformer.mapToIncaricoDetailsOutDTO(task,
-				projectManager, deliveryManager, accountManager, qaReviewer);
+				projectManager, deliveryManager, accountManager, qaReviewer, true);
 		
 		return this.buildOkResponse(res);
 	}

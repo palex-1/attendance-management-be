@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import it.palex.attendanceManagement.data.entities.generic.AuditableEntity;
 import it.palex.attendanceManagement.data.entities.generic.DatabaseCheckableEntity;
@@ -43,6 +44,12 @@ public class CompletedTask extends AuditableEntity implements DatabaseCheckableE
     @NotNull
     @Column(name = "worked_hours")
     private Short workedHours;
+
+	public static final int ACTIVITY_DESCRIPTION_MAX_SIZE = 255;
+
+	@Size(max = ACTIVITY_DESCRIPTION_MAX_SIZE)
+	@Column(name = "ACTIVITY_DESCRIPTION")
+	private String activityDescription;
     
     @Basic(optional = false)
     @NotNull
@@ -64,7 +71,12 @@ public class CompletedTask extends AuditableEntity implements DatabaseCheckableE
     @Column(name = "editable")
     private Boolean editable = DEFAULT_EDITABLE;
     
+    @NotNull
+    @Basic(optional = false)
+    @Column(name = "total_cost")
+    private Double totalCost;
     
+        
     @JoinColumn(name = "task_code", referencedColumnName = "task_code")
     @ManyToOne(optional = false)
     private WorkTask taskCode;
@@ -80,16 +92,20 @@ public class CompletedTask extends AuditableEntity implements DatabaseCheckableE
 	public boolean canBeInsertedInDatabase() {
 		boolean isValid = isValidWorkedHours(this.workedHours)&& 
 					isValidUserProfile(this.userProfile)&& isValidSmartworked(this.smartworked)
-						&& isValidDay(this.day) && isValidWorkTask(this.taskCode)
-						&& isValidEditable(this.editable);
+					&& isValidDay(this.day) && isValidWorkTask(this.taskCode)
+					&& isValidEditable(this.editable) && isValidActivityDescription(this.activityDescription)
+					&& isValidTotalCost(this.totalCost);
 		
 		return isValid;
 	}
-    
-    public String whyCannotBeInsertedInDatabase() {
+
+
+	public String whyCannotBeInsertedInDatabase() {
     	String why = "workedHours:"+this.workedHours+", userProfile:"+this.userProfile
     			+", smartworked"+this.smartworked+", taskCode:"+this.taskCode
-    			+", editable:"+this.editable+", day:"+this.day;
+    			+", editable:"+this.editable+", day:"+this.day
+				+", activityDescription:"+this.activityDescription
+				+", totalCost:"+this.totalCost;
 
 		return why;
 	}
@@ -121,7 +137,24 @@ public class CompletedTask extends AuditableEntity implements DatabaseCheckableE
     	return true;
     }
 
-    
+	public Double getTotalCost() {
+		return totalCost;
+	}
+
+	public void setTotalCost(Double totalCost) {
+		this.totalCost = totalCost;
+	}
+
+	public static boolean isValidTotalCost(Double totalCost) {
+		if(totalCost==null) {
+			return false;
+		}
+		if(totalCost.doubleValue() < 0d) {
+			return false;
+		}
+		return true;
+	}
+	
     public Date getDay() {
 		return day;
 	}
@@ -194,8 +227,27 @@ public class CompletedTask extends AuditableEntity implements DatabaseCheckableE
 		this.editable = editable;
 	}
 	
-	public static  boolean isValidEditable(Boolean editable) {
+	public static boolean isValidEditable(Boolean editable) {
 		return editable!=null;
+	}
+
+
+	public void setActivityDescription(String activityDescription) {
+		this.activityDescription = activityDescription;
+	}
+
+	public String getActivityDescription(){
+    	return this.activityDescription;
+	}
+
+	public static boolean isValidActivityDescription(String activityDescription) {
+    	if(activityDescription==null){
+    		return true;
+		}
+    	if(activityDescription.length()>ACTIVITY_DESCRIPTION_MAX_SIZE){
+    		return false;
+		}
+    	return true;
 	}
 
 	@Override
@@ -222,5 +274,6 @@ public class CompletedTask extends AuditableEntity implements DatabaseCheckableE
     public String toString() {
         return "it.palex.attendanceManagement.data.entities.CompletedTask[ id=" + id + " ]";
     }
+
 
 }

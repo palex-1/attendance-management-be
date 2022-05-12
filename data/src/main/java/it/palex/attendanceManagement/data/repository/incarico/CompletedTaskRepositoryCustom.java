@@ -14,4 +14,6 @@ public interface CompletedTaskRepositoryCustom {
 	public Pair<List<WorkTaskSummaryPseudoEntity>, Long> findWorkTaskSummary(WorkTask task, Date startDate, Date endDate,
 			String name, String surname, String email, Pageable pageable);
 
+	public Double computeTotalHumanCost(WorkTask task, Date startDate, Date endDate);
+
 }

@@ -11,7 +11,7 @@ public class UserNotificationTransformer {
 		if(notifications==null) {
 			return null;
 		}
-		List<UserNotificationDTO> res = new ArrayList<UserNotificationDTO>(notifications.size());
+		List<UserNotificationDTO> res = new ArrayList<>(notifications.size());
 		
 		for(UserNotification notification : notifications) {
 			res.add(mapToDTO(notification));

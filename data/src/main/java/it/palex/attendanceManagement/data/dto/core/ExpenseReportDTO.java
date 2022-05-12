@@ -2,6 +2,9 @@ package it.palex.attendanceManagement.data.dto.core;
 
 import java.util.Date;
 
+import it.palex.attendanceManagement.data.dto.tasks.WorkTaskDTO;
+import it.palex.attendanceManagement.data.dto.tasks.WorkTaskMinimalDTO;
+
 public class ExpenseReportDTO {
 
 	private Long id;
@@ -15,6 +18,8 @@ public class ExpenseReportDTO {
 	private UserProfileSmallDTO madeBy;
 	private UserProfileSmallDTO processedBy;
 	private UserProfileSmallDTO processingBy;
+	private WorkTaskMinimalDTO workTask;
+	
 
 	public Long getId() {
 		return id;
@@ -102,6 +107,14 @@ public class ExpenseReportDTO {
 
 	public void setAmountAccepted(Double amountAccepted) {
 		this.amountAccepted = amountAccepted;
+	}
+
+	public WorkTaskMinimalDTO getWorkTask() {
+		return workTask;
+	}
+
+	public void setWorkTask(WorkTaskMinimalDTO workTask) {
+		this.workTask = workTask;
 	}
 
 	

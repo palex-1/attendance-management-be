@@ -4,10 +4,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import it.palex.attendanceManagement.library.utils.DateUtility;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.querydsl.core.BooleanBuilder;
@@ -101,8 +104,49 @@ public class UserAttendanceService implements BasicGenericService {
 		
 		return list;
 	}
-	
-	
-	
-	
+
+	public UserAttendance findLastAttendanceOfUser(UserProfile profile) {
+		if(profile==null) {
+			throw new NullPointerException();
+		}
+		BooleanBuilder cond = new BooleanBuilder();
+		cond.and(QUA.userProfile.id.eq(profile.getId()));
+		
+		Sort sort = Sort.by(Direction.DESC, "timestamp");
+		
+		PageRequest page = PageRequest.of(0, 1, sort);
+		
+		UserAttendance attendance = this.getFirstResultFromIterable(
+										this.userAttendanceRepository.findAll(cond, page)
+									);
+		
+		return attendance;
+	}
+
+
+	public List<UserAttendance> findAttendanceOfDay(Long turnstileId, Date dateAttedance, Sort sort) {
+		if(dateAttedance==null){
+			throw new IllegalArgumentException("Day must be specified. Or the result could be too large");
+		}
+
+		if(sort==null){
+			throw new NullPointerException("sort arg required");
+		}
+
+		BooleanBuilder cond = new BooleanBuilder();
+
+		if(turnstileId!=null){
+			cond.and(QUA.turnstile.id.eq(turnstileId));
+		}
+
+		cond.and(QUA.timestamp.goe(DateUtility.startOfDayOfDate(dateAttedance)));
+		cond.and(QUA.timestamp.loe(DateUtility.endOfDayOfDate(dateAttedance)));
+		cond.and(QUA.deleted.isFalse());
+
+		List<UserAttendance> list = this.iterableToList(
+				this.userAttendanceRepository.findAll(cond, sort)
+		);
+
+		return list;
+	}
 }
